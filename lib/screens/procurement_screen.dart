@@ -10,6 +10,7 @@ import '../services/mock_data_service.dart';
 import '../utils/formatters.dart';
 import '../widgets/cancel_booking_dialog.dart';
 import '../widgets/info_card.dart';
+import '../widgets/simulated_data_notice.dart';
 import '../widgets/status_badge.dart';
 
 class ProcurementScreen extends StatefulWidget {
@@ -34,6 +35,17 @@ class _ProcurementScreenState extends State<ProcurementScreen>
   void dispose() {
     _tabController.dispose();
     super.dispose();
+  }
+
+  String _utrDisplay(S s, ProcurementTransaction txn) {
+    switch (txn.utrNumber) {
+      case 'PENDING_BANK_CLEARANCE':
+        return s.utrPendingClearance;
+      case 'AWAITING_PROCUREMENT_SLIP':
+        return s.utrAwaitingSlip;
+      default:
+        return txn.utrNumber;
+    }
   }
 
   void _showSlipDialog(ProcurementTransaction txn) {
@@ -85,7 +97,7 @@ class _ProcurementScreenState extends State<ProcurementScreen>
               const Divider(height: 16),
               _SlipRow(label: s.bankAccount, value: txn.bankAccountMasked),
               const Divider(height: 16),
-              _SlipRow(label: s.utrReference, value: txn.utrNumber),
+              _SlipRow(label: s.utrReference, value: _utrDisplay(s, txn)),
             ],
           ),
         ),
@@ -144,8 +156,9 @@ class _ProcurementScreenState extends State<ProcurementScreen>
             fontSize: 14,
           ),
           tabs: [
-            Tab(text: s.paymentHistory),
+            // Mandi Bookings first, Payment History second.
             Tab(text: s.mandiBookings),
+            Tab(text: s.paymentHistory),
           ],
         ),
       ),
@@ -153,6 +166,133 @@ class _ProcurementScreenState extends State<ProcurementScreen>
         child: TabBarView(
           controller: _tabController,
           children: [
+            ListView.separated(
+              physics: const BouncingScrollPhysics(),
+              padding: const EdgeInsets.all(AppDimensions.paddingMedium),
+              itemCount: bookings.length,
+              separatorBuilder: (context, index) => const SizedBox(height: 10),
+              itemBuilder: (context, index) {
+                final booking = bookings[index];
+                final isConfirmed =
+                    booking.status == BookingStatus.confirmed ||
+                    booking.status == BookingStatus.inQueue;
+
+                return InfoCard(
+                  padding: const EdgeInsets.all(AppDimensions.paddingLarge),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Container(
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 10,
+                              vertical: 4,
+                            ),
+                            decoration: BoxDecoration(
+                              color: AppColors.surfacePaleGreen,
+                              borderRadius: BorderRadius.circular(6),
+                            ),
+                            child: Text(
+                              booking.tokenNumber,
+                              style: const TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.w800,
+                                color: AppColors.primaryGreen,
+                              ),
+                            ),
+                          ),
+                          StatusBadge(
+                            label: booking.status == BookingStatus.confirmed
+                                ? s.confirmed
+                                : booking.status == BookingStatus.inQueue
+                                ? s.inQueue
+                                : booking.status == BookingStatus.completed
+                                ? s.completed
+                                : s.cancelled,
+                            type: isConfirmed
+                                ? BadgeType.success
+                                : BadgeType.neutral,
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 12),
+                      Text(
+                        '${s.cropName(booking.crop)} • ${booking.gate}',
+                        style: const TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.w700,
+                          color: AppColors.textPrimary,
+                        ),
+                      ),
+                      const SizedBox(height: 4),
+                      Text(
+                        '${AppFormatters.formatDate(booking.date)} | ${booking.timeRange}',
+                        style: const TextStyle(
+                          fontSize: 13,
+                          color: AppColors.textSecondary,
+                        ),
+                      ),
+                      const SizedBox(height: 6),
+                      Text(
+                        '${s.bookingId}${booking.id}',
+                        style: const TextStyle(
+                          fontSize: 11,
+                          color: AppColors.textMuted,
+                        ),
+                      ),
+                      if (isConfirmed) ...[
+                        const SizedBox(height: 10),
+                        const Divider(height: 1, color: AppColors.borderSubtle),
+                        const SizedBox(height: 8),
+                        InkWell(
+                          onTap: () async {
+                            final cancelled = await showCancelBookingDialog(
+                              context,
+                              booking,
+                            );
+                            if (cancelled != null && context.mounted) {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                  content: Text(s.bookingCancelledSuccess),
+                                  backgroundColor: AppColors.statusAlert,
+                                  behavior: SnackBarBehavior.floating,
+                                ),
+                              );
+                            }
+                          },
+                          borderRadius: BorderRadius.circular(8),
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(vertical: 4),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                const Icon(
+                                  Icons.event_busy_outlined,
+                                  size: 16,
+                                  color: AppColors.statusAlert,
+                                ),
+                                const SizedBox(width: 6),
+                                Text(
+                                  s.cancelBookingAction,
+                                  style: const TextStyle(
+                                    fontSize: 13,
+                                    fontWeight: FontWeight.w700,
+                                    color: AppColors.statusAlert,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ],
+                    ],
+                  ),
+                );
+              },
+            ),
+
             SingleChildScrollView(
               physics: const BouncingScrollPhysics(),
               padding: const EdgeInsets.symmetric(
@@ -162,6 +302,10 @@ class _ProcurementScreenState extends State<ProcurementScreen>
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
+                  SimulatedDataNotice(
+                    title: s.simulatedDataLabel,
+                    message: s.simulatedPaymentNotice,
+                  ),
                   InfoCard(
                     padding: const EdgeInsets.all(AppDimensions.paddingLarge),
                     child: Column(
@@ -353,136 +497,6 @@ class _ProcurementScreenState extends State<ProcurementScreen>
                   }),
                 ],
               ),
-            ),
-
-            ListView.separated(
-              physics: const BouncingScrollPhysics(),
-              padding: const EdgeInsets.all(AppDimensions.paddingMedium),
-              itemCount: bookings.length,
-              separatorBuilder: (context, index) => const SizedBox(height: 10),
-              itemBuilder: (context, index) {
-                final booking = bookings[index];
-                final isConfirmed =
-                    booking.status == BookingStatus.confirmed ||
-                    booking.status == BookingStatus.inQueue;
-
-                return InfoCard(
-                  padding: const EdgeInsets.all(AppDimensions.paddingLarge),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Container(
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: 10,
-                              vertical: 4,
-                            ),
-                            decoration: BoxDecoration(
-                              color: AppColors.surfacePaleGreen,
-                              borderRadius: BorderRadius.circular(6),
-                            ),
-                            child: Text(
-                              booking.tokenNumber,
-                              style: const TextStyle(
-                                fontSize: 16,
-                                fontWeight: FontWeight.w800,
-                                color: AppColors.primaryGreen,
-                              ),
-                            ),
-                          ),
-                          StatusBadge(
-                            label: booking.status == BookingStatus.confirmed
-                                ? s.confirmed
-                                : booking.status == BookingStatus.inQueue
-                                ? s.inQueue
-                                : booking.status == BookingStatus.completed
-                                ? s.completed
-                                : s.cancelled,
-                            type: isConfirmed
-                                ? BadgeType.success
-                                : BadgeType.neutral,
-                          ),
-                        ],
-                      ),
-                      const SizedBox(height: 12),
-                      Text(
-                        '${s.cropName(booking.crop)} • ${booking.gate}',
-                        style: const TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.w700,
-                          color: AppColors.textPrimary,
-                        ),
-                      ),
-                      const SizedBox(height: 4),
-                      Text(
-                        '${AppFormatters.formatDate(booking.date)} | ${booking.timeRange}',
-                        style: const TextStyle(
-                          fontSize: 13,
-                          color: AppColors.textSecondary,
-                        ),
-                      ),
-                      const SizedBox(height: 6),
-                      Text(
-                        '${s.bookingId}${booking.id}',
-                        style: const TextStyle(
-                          fontSize: 11,
-                          color: AppColors.textMuted,
-                        ),
-                      ),
-                      if (isConfirmed) ...[
-                        const SizedBox(height: 10),
-                        const Divider(
-                          height: 1,
-                          color: AppColors.borderSubtle,
-                        ),
-                        const SizedBox(height: 8),
-                        InkWell(
-                          onTap: () async {
-                            final cancelled = await showCancelBookingDialog(
-                              context,
-                              booking,
-                            );
-                            if (cancelled != null && context.mounted) {
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                SnackBar(
-                                  content: Text(s.bookingCancelledSuccess),
-                                  backgroundColor: AppColors.statusAlert,
-                                  behavior: SnackBarBehavior.floating,
-                                ),
-                              );
-                            }
-                          },
-                          borderRadius: BorderRadius.circular(8),
-                          child: Padding(
-                            padding: const EdgeInsets.symmetric(vertical: 4),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                const Icon(
-                                  Icons.event_busy_outlined,
-                                  size: 16,
-                                  color: AppColors.statusAlert,
-                                ),
-                                const SizedBox(width: 6),
-                                Text(
-                                  s.cancelBookingAction,
-                                  style: const TextStyle(
-                                    fontSize: 13,
-                                    fontWeight: FontWeight.w700,
-                                    color: AppColors.statusAlert,
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
-                      ],
-                    ],
-                  ),
-                );
-              },
             ),
           ],
         ),

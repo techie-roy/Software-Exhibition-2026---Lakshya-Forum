@@ -33,9 +33,7 @@ Widget _wrap(Widget child, MockDataService dataService) {
       ChangeNotifierProvider.value(value: bookingProvider),
       ChangeNotifierProvider.value(value: QueueProvider(dataService)),
     ],
-    child: MaterialApp(
-      home: Scaffold(body: child),
-    ),
+    child: MaterialApp(home: Scaffold(body: child)),
   );
 }
 
@@ -56,8 +54,7 @@ void main() {
           Builder(
             builder: (context) => Center(
               child: ElevatedButton(
-                onPressed: () =>
-                    showCancelBookingDialog(context, booking),
+                onPressed: () => showCancelBookingDialog(context, booking),
                 child: const Text('open'),
               ),
             ),
@@ -70,8 +67,10 @@ void main() {
       await pumpFrames(tester);
 
       expect(find.text('Cancel Booking'), findsWidgets);
-      expect(find.text('Are you sure you want to cancel this booking?'),
-          findsOneWidget);
+      expect(
+        find.text('Are you sure you want to cancel this booking?'),
+        findsOneWidget,
+      );
       expect(find.text('Keep Booking'), findsOneWidget);
       expect(find.text('A-125'), findsOneWidget);
       expect(find.text('Wheat'), findsOneWidget);
@@ -89,8 +88,7 @@ void main() {
           Builder(
             builder: (context) => Center(
               child: ElevatedButton(
-                onPressed: () =>
-                    showCancelBookingDialog(context, booking),
+                onPressed: () => showCancelBookingDialog(context, booking),
                 child: const Text('open'),
               ),
             ),
@@ -104,8 +102,7 @@ void main() {
       await tester.tap(find.text('Keep Booking'));
       await pumpFrames(tester);
 
-      expect(dataService.activeBooking.status,
-          equals(BookingStatus.inQueue));
+      expect(dataService.activeBooking.status, equals(BookingStatus.inQueue));
     });
 
     testWidgets('Confirm cancels the booking and returns updated booking', (
@@ -121,7 +118,10 @@ void main() {
             builder: (context) => Center(
               child: ElevatedButton(
                 onPressed: () async {
-                  dialogResult = await showCancelBookingDialog(context, booking);
+                  dialogResult = await showCancelBookingDialog(
+                    context,
+                    booking,
+                  );
                 },
                 child: const Text('open'),
               ),
@@ -139,8 +139,7 @@ void main() {
 
       expect(dialogResult, isNotNull);
       expect(dialogResult!.status, equals(BookingStatus.cancelled));
-      expect(dataService.activeBooking.status,
-          equals(BookingStatus.cancelled));
+      expect(dataService.activeBooking.status, equals(BookingStatus.cancelled));
     });
   });
 
@@ -187,8 +186,7 @@ void main() {
       await tester.tap(find.widgetWithText(ElevatedButton, 'Cancel Booking'));
       await pumpFrames(tester);
 
-      expect(dataService.activeBooking.status,
-          equals(BookingStatus.cancelled));
+      expect(dataService.activeBooking.status, equals(BookingStatus.cancelled));
     });
   });
 }

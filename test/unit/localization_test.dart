@@ -22,7 +22,9 @@ void main() {
       // (English) before any writes to the shared mock preferences store.
       await Future<void>.delayed(Duration.zero);
       final hi = AppLanguage.supportedLanguages[1];
-      final te = AppLanguage.supportedLanguages.firstWhere((l) => l.code == 'te');
+      final te = AppLanguage.supportedLanguages.firstWhere(
+        (l) => l.code == 'te',
+      );
       await hiProvider.setLanguage(hi);
       await teProvider.setLanguage(te);
     });
@@ -36,7 +38,7 @@ void main() {
       expect(s.translate('step_booked'), 'Booked');
       expect(s.refreshingInSeconds(30), 'Refreshing in 30s');
       expect(s.bookingId, 'Booking ID: ');
-      expect(s.liveBadge, 'LIVE');
+      expect(s.liveBadge, 'DEMO');
       expect(s.aiInsightText, startsWith('Wheat prices may remain stable'));
     });
 
@@ -48,7 +50,7 @@ void main() {
       expect(s.gateStatusName('high_crowd'), 'उच्च भीड़');
       expect(s.translate('step_booked'), 'बुक किया');
       expect(s.bookingId, 'बुकिंग आईडी: ');
-      expect(s.liveBadge, 'लाइव');
+      expect(s.liveBadge, 'डेमो');
     });
 
     test('Unknown crop/category IDs fall back to the raw ID', () {
@@ -59,11 +61,14 @@ void main() {
       expect(s.translate('nonexistent_key'), 'nonexistent_key');
     });
 
-    test('Languages without a key fall back to English, never to the raw key', () {
-      final s = S(teProvider);
-      expect(s.translate('crop_wheat'), 'Wheat');
-      expect(s.cropName('wheat'), 'Wheat');
-      expect(s.translate('step_booked'), 'Booked');
-    });
+    test(
+      'Languages without a key fall back to English, never to the raw key',
+      () {
+        final s = S(teProvider);
+        expect(s.translate('crop_wheat'), 'Wheat');
+        expect(s.cropName('wheat'), 'Wheat');
+        expect(s.translate('step_booked'), 'Booked');
+      },
+    );
   });
 }

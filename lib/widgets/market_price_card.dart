@@ -91,6 +91,31 @@ class DashboardMarketPriceCard extends StatelessWidget {
               ),
             ],
           ),
+          const SizedBox(height: 6),
+          // The dashboard card is always fed the app's sample rows — say so
+          // instead of implying a live mandi feed.
+          Row(
+            children: [
+              const Icon(
+                Icons.info_outline,
+                size: 13,
+                color: AppColors.textMuted,
+              ),
+              const SizedBox(width: 4),
+              Expanded(
+                child: Text(
+                  s.sampleRatesCaption,
+                  style: const TextStyle(
+                    fontSize: 11,
+                    fontWeight: FontWeight.w500,
+                    color: AppColors.textMuted,
+                  ),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                ),
+              ),
+            ],
+          ),
           const SizedBox(height: 14),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,

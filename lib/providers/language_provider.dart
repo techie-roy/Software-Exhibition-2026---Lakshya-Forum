@@ -1,11 +1,13 @@
 import 'package:flutter/foundation.dart';
+
 import '../models/language.dart';
 import '../services/local_storage_service.dart';
 
 class LanguageProvider extends ChangeNotifier {
   final LocalStorageService _storageService;
 
-  AppLanguage _currentLanguage = AppLanguage.supportedLanguages.first; // English default
+  AppLanguage _currentLanguage =
+      AppLanguage.supportedLanguages.first; // English default
 
   LanguageProvider(this._storageService) {
     _loadLanguage();

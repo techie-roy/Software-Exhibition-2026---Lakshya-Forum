@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+
 import '../app/constants.dart';
 import '../app/localizations.dart';
 
@@ -27,7 +28,9 @@ class AadhaarScannerButton extends StatelessWidget {
             decoration: BoxDecoration(
               color: AppColors.surfacePaleGreen,
               borderRadius: BorderRadius.circular(AppDimensions.radiusSmall),
-              border: Border.all(color: AppColors.primaryLight.withValues(alpha: 0.3)),
+              border: Border.all(
+                color: AppColors.primaryLight.withValues(alpha: 0.3),
+              ),
             ),
             child: Row(
               mainAxisSize: MainAxisSize.min,

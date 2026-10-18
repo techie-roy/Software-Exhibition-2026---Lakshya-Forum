@@ -155,12 +155,14 @@ class VoiceBookingService {
       }
       return 12;
     }
-    final isPm = normalized.contains('pm') ||
+    final isPm =
+        normalized.contains('pm') ||
         normalized.contains('p m') ||
         normalized.contains('सायं') ||
         normalized.contains('शाम') ||
         normalized.contains('रात');
-    final isAm = normalized.contains('am') ||
+    final isAm =
+        normalized.contains('am') ||
         normalized.contains('a m') ||
         normalized.contains('सुबह') ||
         normalized.contains('प्रातः');
@@ -179,20 +181,22 @@ class VoiceBookingService {
     required int targetHour,
   }) {
     final matches = slots
-        .where((s) =>
-            s.crop == cropId &&
-            s.status != SlotStatus.full &&
-            s.availableCapacity > 0)
+        .where(
+          (s) =>
+              s.crop == cropId &&
+              s.status != SlotStatus.full &&
+              s.availableCapacity > 0,
+        )
         .map((slot) {
-      final hour = _slotStartHour(slot.timeRange);
-      return SlotMatch(slot, hour - targetHour);
-    })
+          final hour = _slotStartHour(slot.timeRange);
+          return SlotMatch(slot, hour - targetHour);
+        })
         .toList();
 
     matches.sort((a, b) {
       final diffCompare = a.hourDifference.abs().compareTo(
-            b.hourDifference.abs(),
-          );
+        b.hourDifference.abs(),
+      );
       if (diffCompare != 0) return diffCompare;
       return a.slot.date.compareTo(b.slot.date);
     });

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+
 import '../app/constants.dart';
 import '../app/localizations.dart';
 import '../app/routes.dart';
@@ -7,6 +8,7 @@ import '../models/farmer.dart';
 import '../providers/auth_provider.dart';
 import '../providers/language_provider.dart';
 import '../widgets/info_card.dart';
+import '../widgets/profile_avatar.dart';
 import 'language_screen.dart';
 
 class ProfileScreen extends StatelessWidget {
@@ -31,7 +33,10 @@ class ProfileScreen extends StatelessWidget {
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
-            child: Text(s.cancel, style: const TextStyle(color: AppColors.textSecondary)),
+            child: Text(
+              s.cancel,
+              style: const TextStyle(color: AppColors.textSecondary),
+            ),
           ),
           ElevatedButton(
             onPressed: () async {
@@ -61,7 +66,9 @@ class ProfileScreen extends StatelessWidget {
     showModalBottomSheet(
       context: context,
       shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(AppDimensions.radiusXLarge)),
+        borderRadius: BorderRadius.vertical(
+          top: Radius.circular(AppDimensions.radiusXLarge),
+        ),
       ),
       builder: (context) => SafeArea(
         child: SingleChildScrollView(
@@ -76,16 +83,25 @@ class ProfileScreen extends StatelessWidget {
                 children: [
                   Text(
                     s.personalInformation,
-                    style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                    style: const TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
-                  IconButton(icon: const Icon(Icons.close), onPressed: () => Navigator.pop(context)),
+                  IconButton(
+                    icon: const Icon(Icons.close),
+                    onPressed: () => Navigator.pop(context),
+                  ),
                 ],
               ),
               const SizedBox(height: 12),
               _ProfileDetailRow(label: s.fullName, val: farmer.name),
               _ProfileDetailRow(label: s.mobileNumber, val: farmer.mobile),
               _ProfileDetailRow(label: s.farmerId, val: farmer.id),
-              _ProfileDetailRow(label: s.landSize, val: '${farmer.landSizeAcres} ${s.acres}'),
+              _ProfileDetailRow(
+                label: s.landSize,
+                val: '${farmer.landSizeAcres} ${s.acres}',
+              ),
               _ProfileDetailRow(label: s.village, val: farmer.village),
               _ProfileDetailRow(label: s.district, val: farmer.district),
               _ProfileDetailRow(label: s.state, val: farmer.state),
@@ -102,7 +118,9 @@ class ProfileScreen extends StatelessWidget {
     showModalBottomSheet(
       context: context,
       shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(AppDimensions.radiusXLarge)),
+        borderRadius: BorderRadius.vertical(
+          top: Radius.circular(AppDimensions.radiusXLarge),
+        ),
       ),
       builder: (context) => SafeArea(
         child: SingleChildScrollView(
@@ -117,9 +135,15 @@ class ProfileScreen extends StatelessWidget {
                 children: [
                   Text(
                     s.myDocuments,
-                    style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                    style: const TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
-                  IconButton(icon: const Icon(Icons.close), onPressed: () => Navigator.pop(context)),
+                  IconButton(
+                    icon: const Icon(Icons.close),
+                    onPressed: () => Navigator.pop(context),
+                  ),
                 ],
               ),
               const SizedBox(height: 12),
@@ -153,7 +177,9 @@ class ProfileScreen extends StatelessWidget {
     showModalBottomSheet(
       context: context,
       shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(AppDimensions.radiusXLarge)),
+        borderRadius: BorderRadius.vertical(
+          top: Radius.circular(AppDimensions.radiusXLarge),
+        ),
       ),
       builder: (context) => SafeArea(
         child: SingleChildScrollView(
@@ -168,9 +194,15 @@ class ProfileScreen extends StatelessWidget {
                 children: [
                   Text(
                     s.helpSupport,
-                    style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                    style: const TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
-                  IconButton(icon: const Icon(Icons.close), onPressed: () => Navigator.pop(context)),
+                  IconButton(
+                    icon: const Icon(Icons.close),
+                    onPressed: () => Navigator.pop(context),
+                  ),
                 ],
               ),
               const SizedBox(height: 12),
@@ -182,19 +214,31 @@ class ProfileScreen extends StatelessWidget {
                 ),
                 child: Row(
                   children: [
-                    const Icon(Icons.phone_in_talk, color: AppColors.primaryGreen, size: 28),
+                    const Icon(
+                      Icons.phone_in_talk,
+                      color: AppColors.primaryGreen,
+                      size: 28,
+                    ),
                     const SizedBox(width: 14),
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
                           s.tollFree,
-                          style: const TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: AppColors.textPrimary),
+                          style: const TextStyle(
+                            fontSize: 14,
+                            fontWeight: FontWeight.bold,
+                            color: AppColors.textPrimary,
+                          ),
                         ),
                         const SizedBox(height: 2),
                         Text(
                           s.helplineHours,
-                          style: const TextStyle(fontSize: 13, color: AppColors.primaryGreen, fontWeight: FontWeight.w700),
+                          style: const TextStyle(
+                            fontSize: 13,
+                            color: AppColors.primaryGreen,
+                            fontWeight: FontWeight.w700,
+                          ),
                         ),
                       ],
                     ),
@@ -204,7 +248,10 @@ class ProfileScreen extends StatelessWidget {
               const SizedBox(height: 16),
               Text(
                 '${s.faq}:',
-                style: const TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
+                style: const TextStyle(
+                  fontSize: 14,
+                  fontWeight: FontWeight.bold,
+                ),
               ),
               const SizedBox(height: 8),
               Text('• ${s.faq1}'),
@@ -225,24 +272,7 @@ class ProfileScreen extends StatelessWidget {
     final authProvider = context.watch<AuthProvider>();
     final languageProvider = context.watch<LanguageProvider>();
     final s = S.of(context);
-    final farmer = authProvider.currentFarmer ??
-        const Farmer(
-          id: 'FID-UP-78219',
-          name: 'Rajesh Kumar',
-          mobile: '+91 9876543210',
-          mandiId: 'MND-LKO-01',
-          mandiName: 'Lucknow Central Mandi',
-          mandiAddress: 'Transport Nagar, Lucknow, UP',
-          landSizeAcres: 6.5,
-          village: 'Malihabad',
-          district: 'Lucknow',
-          state: 'Uttar Pradesh',
-          kisanCreditCard: 'KCC-8821-4412-9901',
-          aadhaarMasked: 'XXXX-XXXX-4819',
-          bankAccountMasked: 'SBI ••••••••3912',
-          bankName: 'State Bank of India',
-          avatarInitials: 'RK',
-        );
+    final farmer = authProvider.displayFarmer;
 
     return Scaffold(
       backgroundColor: AppColors.scaffoldBackground,
@@ -254,31 +284,23 @@ class ProfileScreen extends StatelessWidget {
       body: SafeArea(
         child: SingleChildScrollView(
           physics: const BouncingScrollPhysics(),
-          padding: const EdgeInsets.symmetric(horizontal: AppDimensions.paddingMedium, vertical: 12),
+          padding: const EdgeInsets.symmetric(
+            horizontal: AppDimensions.paddingMedium,
+            vertical: 12,
+          ),
           child: Column(
             children: [
               InfoCard(
                 padding: const EdgeInsets.all(AppDimensions.paddingLarge),
                 child: Row(
                   children: [
-                    Container(
-                      width: 60,
-                      height: 60,
-                      decoration: BoxDecoration(
-                        color: AppColors.surfacePaleGreen,
-                        shape: BoxShape.circle,
-                        border: Border.all(color: AppColors.primaryGreen, width: 2),
-                      ),
-                      child: Center(
-                        child: Text(
-                          farmer.avatarInitials,
-                          style: const TextStyle(
-                            fontSize: 22,
-                            fontWeight: FontWeight.w900,
-                            color: AppColors.primaryGreen,
-                          ),
-                        ),
-                      ),
+                    ProfileAvatar(
+                      farmer: farmer,
+                      size: 60,
+                      fontSize: 22,
+                      fontWeight: FontWeight.w900,
+                      borderWidth: 2,
+                      borderColor: AppColors.primaryGreen,
                     ),
                     const SizedBox(width: 16),
                     Expanded(
@@ -304,7 +326,10 @@ class ProfileScreen extends StatelessWidget {
                           ),
                           const SizedBox(height: 4),
                           Container(
-                            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 8,
+                              vertical: 2,
+                            ),
                             decoration: BoxDecoration(
                               color: AppColors.surfacePaleGreen,
                               borderRadius: BorderRadius.circular(4),
@@ -336,7 +361,11 @@ class ProfileScreen extends StatelessWidget {
                       subtitle: '${farmer.village}, ${farmer.district}',
                       onTap: () => _showPersonalInfoDialog(context, farmer),
                     ),
-                    const Divider(height: 1, indent: 56, color: AppColors.borderSubtle),
+                    const Divider(
+                      height: 1,
+                      indent: 56,
+                      color: AppColors.borderSubtle,
+                    ),
                     _ProfileTile(
                       icon: Icons.storefront_outlined,
                       title: s.myMandi,
@@ -344,20 +373,30 @@ class ProfileScreen extends StatelessWidget {
                       onTap: () {
                         ScaffoldMessenger.of(context).showSnackBar(
                           SnackBar(
-                            content: Text('${s.selectedMandiLabel}: ${farmer.mandiName}'),
+                            content: Text(
+                              '${s.selectedMandiLabel}: ${farmer.mandiName}',
+                            ),
                             behavior: SnackBarBehavior.floating,
                           ),
                         );
                       },
                     ),
-                    const Divider(height: 1, indent: 56, color: AppColors.borderSubtle),
+                    const Divider(
+                      height: 1,
+                      indent: 56,
+                      color: AppColors.borderSubtle,
+                    ),
                     _ProfileTile(
                       icon: Icons.folder_shared_outlined,
                       title: s.myDocuments,
                       subtitle: s.kccAadhaarBank,
                       onTap: () => _showDocumentsDialog(context, farmer),
                     ),
-                    const Divider(height: 1, indent: 56, color: AppColors.borderSubtle),
+                    const Divider(
+                      height: 1,
+                      indent: 56,
+                      color: AppColors.borderSubtle,
+                    ),
                     _ProfileTile(
                       icon: Icons.translate_rounded,
                       title: s.languageLabel,
@@ -366,12 +405,17 @@ class ProfileScreen extends StatelessWidget {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (context) => const LanguageScreen(isSettingsMode: true),
+                            builder: (context) =>
+                                const LanguageScreen(isSettingsMode: true),
                           ),
                         );
                       },
                     ),
-                    const Divider(height: 1, indent: 56, color: AppColors.borderSubtle),
+                    const Divider(
+                      height: 1,
+                      indent: 56,
+                      color: AppColors.borderSubtle,
+                    ),
                     _ProfileTile(
                       icon: Icons.notifications_none_rounded,
                       title: s.notificationsAlerts,
@@ -385,7 +429,11 @@ class ProfileScreen extends StatelessWidget {
                         );
                       },
                     ),
-                    const Divider(height: 1, indent: 56, color: AppColors.borderSubtle),
+                    const Divider(
+                      height: 1,
+                      indent: 56,
+                      color: AppColors.borderSubtle,
+                    ),
                     _ProfileTile(
                       icon: Icons.help_outline_rounded,
                       title: s.helpSupport,
@@ -406,7 +454,11 @@ class ProfileScreen extends StatelessWidget {
                       color: AppColors.statusAlertBg,
                       borderRadius: BorderRadius.circular(8),
                     ),
-                    child: const Icon(Icons.logout_rounded, color: AppColors.statusAlert, size: 20),
+                    child: const Icon(
+                      Icons.logout_rounded,
+                      color: AppColors.statusAlert,
+                      size: 20,
+                    ),
                   ),
                   title: Text(
                     s.logoutLabel,
@@ -416,7 +468,10 @@ class ProfileScreen extends StatelessWidget {
                       color: AppColors.statusAlert,
                     ),
                   ),
-                  trailing: const Icon(Icons.chevron_right, color: AppColors.statusAlert),
+                  trailing: const Icon(
+                    Icons.chevron_right,
+                    color: AppColors.statusAlert,
+                  ),
                   onTap: () => _showLogoutDialog(context),
                 ),
               ),
@@ -455,13 +510,21 @@ class _ProfileTile extends StatelessWidget {
       ),
       title: Text(
         title,
-        style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w600, color: AppColors.textPrimary),
+        style: const TextStyle(
+          fontSize: 15,
+          fontWeight: FontWeight.w600,
+          color: AppColors.textPrimary,
+        ),
       ),
       subtitle: Text(
         subtitle,
         style: const TextStyle(fontSize: 12, color: AppColors.textSecondary),
       ),
-      trailing: const Icon(Icons.chevron_right, size: 20, color: AppColors.textMuted),
+      trailing: const Icon(
+        Icons.chevron_right,
+        size: 20,
+        color: AppColors.textMuted,
+      ),
       onTap: onTap,
     );
   }
@@ -480,13 +543,23 @@ class _ProfileDetailRow extends StatelessWidget {
       child: Row(
         children: [
           Expanded(
-            child: Text(label, style: const TextStyle(fontSize: 13, color: AppColors.textSecondary)),
+            child: Text(
+              label,
+              style: const TextStyle(
+                fontSize: 13,
+                color: AppColors.textSecondary,
+              ),
+            ),
           ),
           const SizedBox(width: 8),
           Flexible(
             child: Text(
               val,
-              style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w700, color: AppColors.textPrimary),
+              style: const TextStyle(
+                fontSize: 14,
+                fontWeight: FontWeight.w700,
+                color: AppColors.textPrimary,
+              ),
               textAlign: TextAlign.end,
             ),
           ),
@@ -524,13 +597,30 @@ class _DocumentItem extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(title, style: const TextStyle(fontSize: 12, color: AppColors.textMuted)),
+                Text(
+                  title,
+                  style: const TextStyle(
+                    fontSize: 12,
+                    color: AppColors.textMuted,
+                  ),
+                ),
                 const SizedBox(height: 2),
-                Text(number, style: const TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: AppColors.textPrimary)),
+                Text(
+                  number,
+                  style: const TextStyle(
+                    fontSize: 14,
+                    fontWeight: FontWeight.bold,
+                    color: AppColors.textPrimary,
+                  ),
+                ),
               ],
             ),
           ),
-          const Icon(Icons.check_circle, color: AppColors.primaryGreen, size: 18),
+          const Icon(
+            Icons.check_circle,
+            color: AppColors.primaryGreen,
+            size: 18,
+          ),
         ],
       ),
     );

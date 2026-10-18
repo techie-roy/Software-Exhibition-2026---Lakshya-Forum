@@ -20,7 +20,8 @@ const enCropPrompt =
 const enTimePromptWheat =
     'You selected Wheat. Please tell me which time slot you need.';
 const enChecking9 = 'You selected 9:00 AM. Checking slot availability.';
-const enAvail9 = 'The slot at 9:00 AM is available. Your token is being booked.';
+const enAvail9 =
+    'The slot at 9:00 AM is available. Your token is being booked.';
 const enFallback1To7 =
     'The slot at 1:00 AM is not available. Booking the nearest available slot for you at 7:00 AM.';
 const enSuccessPrefix =
@@ -29,10 +30,8 @@ const enDeniedSpeech =
     'Microphone permission not granted. Please grant microphone permission and try again.';
 const enTtsError =
     'Voice assistant could not be started. Please check your device settings and try again.';
-const enRejected =
-    'Microphone permission is required for voice booking.';
-const hiCropPrompt =
-    'कृपया फसल का नाम बताइए। जैसे गेहूं, धान या सरसों।';
+const enRejected = 'Microphone permission is required for voice booking.';
+const hiCropPrompt = 'कृपया फसल का नाम बताइए। जैसे गेहूं, धान या सरसों।';
 
 class FakeTextToSpeechService implements TextToSpeechService {
   final List<String> log;
@@ -198,9 +197,7 @@ class VoiceHarness {
 List<String> _speakListenEvents(List<String> log) {
   return [
     for (final e in log)
-      if (e == 'listen' ||
-          e.startsWith('speak:') ||
-          e.startsWith('speakDone:'))
+      if (e == 'listen' || e.startsWith('speak:') || e.startsWith('speakDone:'))
         e,
   ];
 }
@@ -303,7 +300,10 @@ void main() {
     ) async {
       final log = <String>[];
       final tts = FakeTextToSpeechService(log: log);
-      final speech = FakeVoiceSpeechEngine(log: log, results: const ['wheat', '9 AM']);
+      final speech = FakeVoiceSpeechEngine(
+        log: log,
+        results: const ['wheat', '9 AM'],
+      );
       final harness = VoiceHarness(MockDataService());
 
       await tester.pumpWidget(harness.buildApp(tts: tts, speech: speech));
@@ -316,10 +316,16 @@ void main() {
 
       final booked = harness.data.activeBooking;
       final successSpoken = tts.spokenTexts.last;
-      expect(successSpoken.contains(booked.tokenNumber), isTrue,
-          reason: 'success voice must contain the REAL generated token');
-      expect(successSpoken.contains('9:00 AM'), isTrue,
-          reason: 'success voice must contain the REAL booked slot time');
+      expect(
+        successSpoken.contains(booked.tokenNumber),
+        isTrue,
+        reason: 'success voice must contain the REAL generated token',
+      );
+      expect(
+        successSpoken.contains('9:00 AM'),
+        isTrue,
+        reason: 'success voice must contain the REAL booked slot time',
+      );
       expect(successSpoken.startsWith(enSuccessPrefix), isTrue);
 
       // UI shows real values.
@@ -330,39 +336,42 @@ void main() {
 
     testWidgets(
       'Unavailable requested slot auto-books nearest and clearly distinguishes '
-      'requested vs booked in UI and voice', (
-      WidgetTester tester,
-    ) async {
-      final log = <String>[];
-      final tts = FakeTextToSpeechService(log: log);
-      final speech = FakeVoiceSpeechEngine(log: log, results: const ['wheat', '1 am']);
-      final harness = VoiceHarness(MockDataService());
+      'requested vs booked in UI and voice',
+      (WidgetTester tester) async {
+        final log = <String>[];
+        final tts = FakeTextToSpeechService(log: log);
+        final speech = FakeVoiceSpeechEngine(
+          log: log,
+          results: const ['wheat', '1 am'],
+        );
+        final harness = VoiceHarness(MockDataService());
 
-      await tester.pumpWidget(harness.buildApp(tts: tts, speech: speech));
-      await tester.pump(const Duration(milliseconds: 100));
-      await tester.tap(find.text('Start'));
-      await tester.pump(const Duration(milliseconds: 50));
-      await tester.pump(const Duration(milliseconds: 50));
+        await tester.pumpWidget(harness.buildApp(tts: tts, speech: speech));
+        await tester.pump(const Duration(milliseconds: 100));
+        await tester.tap(find.text('Start'));
+        await tester.pump(const Duration(milliseconds: 50));
+        await tester.pump(const Duration(milliseconds: 50));
 
-      expect(find.text('Token booked successfully'), findsOneWidget);
+        expect(find.text('Token booked successfully'), findsOneWidget);
 
-      // Fallback announcement was spoken before booking.
-      expect(tts.spokenTexts.any((t) => t == enFallback1To7), isTrue);
+        // Fallback announcement was spoken before booking.
+        expect(tts.spokenTexts.any((t) => t == enFallback1To7), isTrue);
 
-      // Success voice uses the ACTUAL booked slot time and token.
-      final booked = harness.data.activeBooking;
-      expect(booked.timeRange, '07:00 AM – 09:00 AM');
-      final successSpoken = tts.spokenTexts.last;
-      expect(successSpoken.contains(booked.tokenNumber), isTrue);
-      expect(successSpoken.contains('7:00 AM'), isTrue);
+        // Success voice uses the ACTUAL booked slot time and token.
+        final booked = harness.data.activeBooking;
+        expect(booked.timeRange, '07:00 AM – 09:00 AM');
+        final successSpoken = tts.spokenTexts.last;
+        expect(successSpoken.contains(booked.tokenNumber), isTrue);
+        expect(successSpoken.contains('7:00 AM'), isTrue);
 
-      // UI clearly distinguishes requested vs booked vs reason.
-      expect(find.text('Requested Slot'), findsOneWidget);
-      expect(find.text('1:00 AM'), findsWidgets);
-      expect(find.text('Booked Slot'), findsOneWidget);
-      expect(find.text('07:00 AM – 09:00 AM'), findsWidgets);
-      expect(find.text('Reason'), findsOneWidget);
-    });
+        // UI clearly distinguishes requested vs booked vs reason.
+        expect(find.text('Requested Slot'), findsOneWidget);
+        expect(find.text('1:00 AM'), findsWidgets);
+        expect(find.text('Booked Slot'), findsOneWidget);
+        expect(find.text('07:00 AM – 09:00 AM'), findsWidgets);
+        expect(find.text('Reason'), findsOneWidget);
+      },
+    );
   });
 
   group('VoiceBookingScreen error states', () {
@@ -371,10 +380,7 @@ void main() {
     ) async {
       final log = <String>[];
       final tts = FakeTextToSpeechService(log: log);
-      final speech = FakeVoiceSpeechEngine(
-        log: log,
-        permissionGranted: false,
-      );
+      final speech = FakeVoiceSpeechEngine(log: log, permissionGranted: false);
       final harness = VoiceHarness(MockDataService());
 
       await tester.pumpWidget(harness.buildApp(tts: tts, speech: speech));
@@ -403,10 +409,7 @@ void main() {
     ) async {
       final log = <String>[];
       final tts = FakeTextToSpeechService(log: log);
-      final speech = FakeVoiceSpeechEngine(
-        log: log,
-        speechAvailable: false,
-      );
+      final speech = FakeVoiceSpeechEngine(log: log, speechAvailable: false);
       final harness = VoiceHarness(MockDataService());
 
       await tester.pumpWidget(harness.buildApp(tts: tts, speech: speech));
@@ -473,7 +476,8 @@ void main() {
       expect(
         tts.spokenTexts.any(
           (t) =>
-              t == 'Could not recognize the crop. Please say the crop name again.',
+              t ==
+              'Could not recognize the crop. Please say the crop name again.',
         ),
         isTrue,
       );
@@ -523,10 +527,7 @@ void main() {
       await tester.pump(const Duration(milliseconds: 50));
 
       expect(tts.speakCount, 0);
-      expect(
-        find.text(enTtsError),
-        findsWidgets,
-      );
+      expect(find.text(enTtsError), findsWidgets);
 
       // Retrying re-attempts initialization without crashing.
       await tester.tap(find.text('Try Again'));
@@ -561,19 +562,18 @@ void main() {
   });
 
   group('VoiceBookingScreen language and TTS locale', () {
-    final hi = AppLanguage.supportedLanguages.firstWhere(
-      (l) => l.code == 'hi',
-    );
-    final en = AppLanguage.supportedLanguages.firstWhere(
-      (l) => l.code == 'en',
-    );
+    final hi = AppLanguage.supportedLanguages.firstWhere((l) => l.code == 'hi');
+    final en = AppLanguage.supportedLanguages.firstWhere((l) => l.code == 'en');
 
     testWidgets('Default language sets English TTS locale', (
       WidgetTester tester,
     ) async {
       final log = <String>[];
       final tts = FakeTextToSpeechService(log: log);
-      final speech = FakeVoiceSpeechEngine(log: log, results: const ['wheat', '9 AM']);
+      final speech = FakeVoiceSpeechEngine(
+        log: log,
+        results: const ['wheat', '9 AM'],
+      );
       final harness = VoiceHarness(MockDataService());
 
       await tester.pumpWidget(harness.buildApp(tts: tts, speech: speech));
@@ -591,7 +591,10 @@ void main() {
     ) async {
       final log = <String>[];
       final tts = FakeTextToSpeechService(log: log);
-      final speech = FakeVoiceSpeechEngine(log: log, results: const ['wheat', '9 AM']);
+      final speech = FakeVoiceSpeechEngine(
+        log: log,
+        results: const ['wheat', '9 AM'],
+      );
       final harness = VoiceHarness(MockDataService());
 
       await tester.pumpWidget(harness.buildApp(tts: tts, speech: speech));

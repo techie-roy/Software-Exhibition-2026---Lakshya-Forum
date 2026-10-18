@@ -2,6 +2,8 @@ plugins {
     id("com.android.application")
     // The Flutter Gradle Plugin must be applied after the Android and Kotlin Gradle plugins.
     id("dev.flutter.flutter-gradle-plugin")
+    // Google Services plugin for Firebase (version declared in settings.gradle.kts).
+    id("com.google.gms.google-services")
 }
 
 android {
@@ -51,3 +53,10 @@ kotlin {
 flutter {
     source = "../.."
 }
+
+// google_sign_in_android declares its own compatible androidx.credentials /
+// googleid versions (credentials 1.6.0 + googleid 1.2.0 for 7.2.18). Forcing
+// them to older versions caused NoSuchMethodError crashes on device
+// (GoogleIdTokenCredential.getEmail and ClearCredentialStateRequest.<init>
+// are not present in googleid 1.1.1 / credentials 1.3.0), so nothing is
+// overridden here: let the plugin resolve its own dependencies.

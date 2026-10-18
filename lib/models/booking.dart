@@ -58,7 +58,8 @@ class Booking {
     gate: gate ?? this.gate,
     status: status ?? this.status,
     createdAt: createdAt ?? this.createdAt,
-    estimatedQuantityQuintal: estimatedQuantityQuintal ?? this.estimatedQuantityQuintal,
+    estimatedQuantityQuintal:
+        estimatedQuantityQuintal ?? this.estimatedQuantityQuintal,
   );
 
   Map<String, dynamic> toJson() => {

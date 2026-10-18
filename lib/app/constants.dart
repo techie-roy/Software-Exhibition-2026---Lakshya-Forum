@@ -2,18 +2,24 @@ import 'package:flutter/material.dart';
 
 class AppColors {
   // Primary Greens
-  static const Color primaryGreen = Color(0xFF1B5E20); // Deep agricultural green
+  static const Color primaryGreen = Color(
+    0xFF1B5E20,
+  ); // Deep agricultural green
   static const Color primaryLight = Color(0xFF2E7D32);
   static const Color primaryDark = Color(0xFF0F3E13);
 
   // Soft Surface Greens
-  static const Color surfacePaleGreen = Color(0xFFE8F5E9); // Pale green background surface
+  static const Color surfacePaleGreen = Color(
+    0xFFE8F5E9,
+  ); // Pale green background surface
   static const Color surfaceSoftMint = Color(0xFFF1F8F3);
   static const Color badgeGreenBg = Color(0xFFDFF0E2);
   static const Color badgeGreenText = Color(0xFF1B5E20);
 
   // Backgrounds
-  static const Color scaffoldBackground = Color(0xFFF8FAF8); // Crisp off-white agricultural bg
+  static const Color scaffoldBackground = Color(
+    0xFFF8FAF8,
+  ); // Crisp off-white agricultural bg
   static const Color cardBackground = Colors.white;
 
   // Status Colors

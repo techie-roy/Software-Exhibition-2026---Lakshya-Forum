@@ -29,6 +29,24 @@ class S {
       'use_otp_instead': 'Use OTP Instead',
       'otp_hint': 'Please enter your mobile number to receive OTP',
       'invalid_login': 'Invalid login details',
+      'email_address': 'Email Address',
+      'login_with_email': 'Login with Email',
+      'email_login_hint': 'example@gmail.com',
+      'or_divider': 'OR',
+      'continue_with_google': 'Continue with Google',
+      'google_sign_in_unavailable': 'Google Sign-In is not configured for this build yet. Enable the Google provider and add an OAuth web client in Firebase Console, then re-download google-services.json.',
+      'google_sign_in_failed': 'Google sign-in failed. Please try again.',
+      'firebase_unconfigured': 'Firebase is not configured yet. Finish Firebase setup or continue with OTP login.',
+      'reset_via_email_title': 'Reset Password via Email',
+      'reset_via_email_desc': 'Enter your registered email address and we will send a password-reset link.',
+      'send_reset_link': 'Send Reset Link',
+      'reset_email_sent': 'Password reset email sent. Please check your inbox.',
+      'email_required_msg': 'Please enter your email address',
+      'password_min6_msg': 'Password must be at least 6 characters',
+      'confirm_password': 'Confirm Password',
+      'retype_password_hint': 'Re-type your password',
+      'passwords_do_not_match': 'Passwords do not match',
+      'password_required': 'Please confirm your password',
       // Registration
       'create_account': 'Create Account',
       'register_subtitle':
@@ -61,6 +79,22 @@ class S {
           r'Redirecting to registration in $_countdown seconds...',
       'register_now': 'Register Now',
       'try_another': 'Try Another Number',
+      // Demo mode
+      'demo_mode_title': 'Demo mode',
+      'demo_mode_body': 'Authentication is simulated. Mobile number + password and OTP sign-in accept any password and any 6-digit OTP for demonstration only — this is not real verification.',
+      'demo_mode_title_real': 'Password sign-in is demo',
+      'demo_mode_body_real': 'Mobile number + password login accepts any password for demonstration only — no password backend is wired yet. OTP verification is real Firebase SMS: Google sends the code (SMS charges/quota may apply).',
+      // Auth flow errors
+      'otp_send_failed': 'Could not send the OTP. Please try again.',
+      'mobile_already_registered':
+          'This mobile number is already registered. Please log in instead.',
+      // Simulated data disclosures
+      'simulated_data_label': 'SIMULATED DATA',
+      'simulated_queue_notice': 'Queue position and wait time are simulated demo values, not a live mandi feed.',
+      'simulated_payment_notice': 'Sample transactions. Payment statuses and UTR numbers are simulated, not real bank settlements.',
+      'simulated_notifications_notice':
+          'Sample notifications. Nothing is delivered to your device.',
+      'simulated_telemetry_notice': 'Gate crowd numbers are simulated and refreshed locally, not a live feed.',
       // Home
       'good_morning': 'Good morning',
       'good_afternoon': 'Good afternoon',
@@ -87,12 +121,12 @@ class S {
       'mandi_insights': 'Mandi Insights',
       'ai_insight': 'AI Insight',
       'live_gate_crowd': 'Live Gate Crowd',
-      'realtime_queue': 'Real-time queue load across procurement gates',
+      'realtime_queue': 'Simulated gate load across procurement gates',
       'refresh': 'Refresh',
-      'gate_telemetry_updated': 'Gate queue telemetry updated.',
+      'gate_telemetry_updated': 'Simulated gate telemetry refreshed.',
       // Queue tracking
-      'live_mandi_queue': 'Live Mandi Queue',
-      'your_live_token': 'Your Live Token',
+      'live_mandi_queue': 'Mandi Queue (Demo)',
+      'your_live_token': 'Your Token',
       'assigned_gate': 'Assigned Gate',
       'farmers_ahead': 'Farmers Ahead',
       'estimated_wait': 'Estimated Wait',
@@ -132,8 +166,10 @@ class S {
       'total_amount': 'Total Net Amount',
       'bank_account': 'Bank Account',
       'utr_reference': 'UTR / Reference',
-      'download_pdf': 'Download PDF',
-      'slip_downloaded': 'E-Slip downloaded to device storage',
+      'download_pdf': 'Preview E-Slip (Demo)',
+      'slip_downloaded': 'Demo e-slip preview — no PDF file is downloaded.',
+      'utr_pending_clearance': 'Awaiting bank clearance (demo)',
+      'utr_awaiting_slip': 'Awaiting procurement slip (demo)',
       // Market prices
       'mandi_crop_prices': 'Mandi Crop Prices',
       'search_crops': 'Search crops (e.g. Wheat, धान)...',
@@ -210,7 +246,13 @@ class S {
       'min_price': 'Min Price',
       'max_price': 'Max Price',
       'govt_msp': 'Govt MSP',
-      'price_banner': 'Lucknow Central Mandi • Today Rates',
+      'price_banner': 'Sample Rates • Demo Data',
+      'price_banner_live': 'Live Mandi Rates',
+      'price_source_govt': 'Source: data.gov.in (Government of India)',
+      'simulated_price_notice': 'Sample crop rates for demonstration only — this is not a live mandi feed. Live government rates appear here when a data.gov.in API key is configured.',
+      'live_prices_unavailable': 'Live government rates are unavailable right now — showing sample (demo) rates.',
+      'sample_rates_caption':
+          'Sample rates (demo data) — not a live mandi feed',
       // Targeted additions
       'available': 'Available',
       'filling_fast': 'Filling Fast',
@@ -293,12 +335,12 @@ class S {
       'step_completed': 'Completed',
       'step_completed_desc': 'E-J form generated & payment dispatched',
       // Live queue
-      'live_badge': 'LIVE',
+      'live_badge': 'DEMO',
       'last_updated': 'Last updated',
       'refreshing_in': 'Refreshing in',
       'seconds_suffix': 's',
-      'auto_refresh_30s': 'Auto-refresh every 30 seconds',
-      'fetching_live_data': 'Fetching live queue data...',
+      'auto_refresh_30s': 'Auto-refresh (demo) every 30 seconds',
+      'fetching_live_data': 'Fetching simulated queue data...',
       'queue_refresh_error': 'Could not refresh queue. Showing last data.',
       'tap_to_retry': 'Tap to retry',
       // Booking confirmation
@@ -323,14 +365,16 @@ class S {
       'voice_unavailable': 'Voice booking unavailable. You can book manually.',
       'voice_error': 'Could not recognize. Please try again.',
       'no_speech_detected': 'No speech detected. Please try again.',
-      'microphone_permission_denied': 'Microphone permission is required for voice booking.',
+      'microphone_permission_denied':
+          'Microphone permission is required for voice booking.',
       'checking_availability': 'Checking availability...',
       'slot_available': 'Slot available',
       'slot_unavailable': 'Requested slot unavailable',
       'best_available_booked': 'Best available slot booked automatically',
       'voice_booking_success': 'Token booked successfully',
       'voice_booking_error': 'Could not complete booking. Please try again.',
-      'no_available_slots': 'No available slots found. Please try manual booking.',
+      'no_available_slots':
+          'No available slots found. Please try manual booking.',
       'crop_selected': 'Crop selected',
       'invalid_crop': 'Could not recognize the crop. Please try again.',
       'invalid_time': 'Could not understand the time. Please try again.',
@@ -352,19 +396,25 @@ class S {
       'grant_mic_permission': 'Grant Microphone Permission',
       // Voice booking spoken announcements ({...} placeholders are replaced)
       'voice_crop_prompt': 'Please tell me the crop you want to book. For example, wheat, paddy, or mustard.',
-      'voice_time_prompt': 'You selected {crop}. Please tell me which time slot you need.',
-      'voice_checking_announcement': 'You selected {time}. Checking slot availability.',
-      'voice_slot_available_announcement': 'The slot at {time} is available. Your token is being booked.',
+      'voice_time_prompt':
+          'You selected {crop}. Please tell me which time slot you need.',
+      'voice_checking_announcement':
+          'You selected {time}. Checking slot availability.',
+      'voice_slot_available_announcement':
+          'The slot at {time} is available. Your token is being booked.',
       'voice_fallback_announcement': 'The slot at {requested} is not available. Booking the nearest available slot for you at {booked}.',
       'voice_success_announcement': 'Your token has been booked successfully. Your slot is at {time}. Your token number is {token}.',
       'voice_permission_denied_speech': 'Microphone permission not granted. Please grant microphone permission and try again.',
       'voice_not_understood': 'I did not understand that. Please say it again.',
-      'voice_repeat_crop': 'Could not recognize the crop. Please say the crop name again.',
-      'voice_repeat_time': 'Could not understand the time. Please say the time again.',
+      'voice_repeat_crop':
+          'Could not recognize the crop. Please say the crop name again.',
+      'voice_repeat_time':
+          'Could not understand the time. Please say the time again.',
       'voice_no_slots_announcement': 'Sorry, no slots are available for this crop. Please try a different time or book manually.',
       'voice_tts_error': 'Voice assistant could not be started. Please check your device settings and try again.',
       'reason_label': 'Reason',
-      'fallback_reason': 'Requested slot unavailable - booked nearest available slot.',
+      'fallback_reason':
+          'Requested slot unavailable - booked nearest available slot.',
     },
     'hi': {
       // Language screen
@@ -390,6 +440,27 @@ class S {
       'use_otp_instead': 'OTP का उपयोग करें',
       'otp_hint': 'कृपया OTP प्राप्त करने के लिए अपना मोबाइल नंबर दर्ज करें',
       'invalid_login': 'अमान्य लॉगिन विवरण',
+      'email_address': 'ईमेल पता',
+      'login_with_email': 'ईमेल से लॉगिन करें',
+      'email_login_hint': 'example@gmail.com',
+      'or_divider': 'या',
+      'continue_with_google': 'Google से जारी रखें',
+      'google_sign_in_unavailable': 'इस बिल्ड के लिए Google साइन-इन अभी कॉन्फ़िगर नहीं है। Firebase Console में Google प्रोवाइडर सक्षम करें और एक OAuth वेब क्लाइंट जोड़ें, फिर google-services.json दोबारा डाउनलोड करें।',
+      'google_sign_in_failed':
+          'Google साइन-इन विफल रहा। कृपया पुनः प्रयास करें।',
+      'firebase_unconfigured': 'फायरबेस अभी कॉन्फ़िगर नहीं है। फायरबेस सेटअप पूरा करें या OTP लॉगिन से जारी रखें।',
+      'reset_via_email_title': 'ईमेल द्वारा पासवर्ड रीसेट करें',
+      'reset_via_email_desc':
+          'अपना पंजीकृत ईमेल पता दर्ज करें, हम पासवर्ड-रीसेट लिंक भेजेंगे।',
+      'send_reset_link': 'रीसेट लिंक भेजें',
+      'reset_email_sent':
+          'पासवर्ड रीसेट ईमेल भेज दिया गया है। कृपया अपना इनबॉक्स जांचें।',
+      'email_required_msg': 'कृपया अपना ईमेल पता दर्ज करें',
+      'password_min6_msg': 'पासवर्ड कम से कम 6 अक्षरों का होना चाहिए',
+      'confirm_password': 'पासवर्ड की पुष्टि करें',
+      'retype_password_hint': 'पासवर्ड फिर से टाइप करें',
+      'passwords_do_not_match': 'पासवर्ड मेल नहीं खाते',
+      'password_required': 'कृपया अपना पासवर्ड दोबारा दर्ज करें',
       // Registration
       'create_account': 'खाता बनाएं',
       'register_subtitle':
@@ -423,6 +494,22 @@ class S {
           r'$_countdown सेकंड में पंजीकरण की ओर पुनर्निर्देशित हो रहे हैं...',
       'register_now': 'अभी पंजीकरण करें',
       'try_another': 'दूसरा नंबर आज़माएं',
+      // Demo mode
+      'demo_mode_title': 'डेमो मोड',
+      'demo_mode_body': 'प्रमाणीकरण नकली है। मोबाइल नंबर + पासवर्ड और OTP साइन-इन में प्रदर्शन के लिए कोई भी पासवर्ड और कोई भी 6-अंकीय OTP स्वीकार किया जाता है — यह वास्तविक सत्यापन नहीं है।',
+      'demo_mode_title_real': 'पासवर्ड साइन-इन डेमो है',
+      'demo_mode_body_real': 'मोबाइल नंबर + पासवर्ड लॉगिन केवल प्रदर्शन के लिए कोई भी पासवर्ड स्वीकार करता है — अभी कोई पासवर्ड बैकएंड नहीं जुड़ा है। OTP सत्यापन वास्तविक Firebase SMS है: Google कोड भेजता है (SMS शुल्क/कोटा लागू हो सकता है)।',
+      // Auth flow errors
+      'otp_send_failed': 'OTP नहीं भेजा जा सका। कृपया पुनः प्रयास करें।',
+      'mobile_already_registered':
+          'यह मोबाइल नंबर पहले से पंजीकृत है। कृपया लॉगिन करें।',
+      // Simulated data disclosures
+      'simulated_data_label': 'नकली डेटा',
+      'simulated_queue_notice': 'कतार की स्थिति और प्रतीक्षा समय नकली डेमो मान हैं, कोई लाइव मंडी फ़ीड नहीं।',
+      'simulated_payment_notice': 'नमूना लेनदेन। भुगतान स्थिति और UTR नंबर नकली हैं, वास्तविक बैंक निपटान नहीं।',
+      'simulated_notifications_notice':
+          'नमूना सूचनाएं। आपके डिवाइस पर कुछ भी नहीं भेजा जाता।',
+      'simulated_telemetry_notice': 'गेट भीड़ संख्याएं नकली हैं और स्थानीय रूप से रिफ्रेश होती हैं, कोई लाइव फ़ीड नहीं।',
       // Home
       'good_morning': 'शुभ प्रभात',
       'good_afternoon': 'नमस्ते',
@@ -448,12 +535,12 @@ class S {
       'mandi_insights': 'मंडी अंतर्दृष्टि',
       'ai_insight': 'AI अंतर्दृष्टि',
       'live_gate_crowd': 'लाइव गेट भीड़',
-      'realtime_queue': 'प्रोक्योरमेंट गेट में रीयल-टाइम कतार लोड',
+      'realtime_queue': 'प्रोक्योरमेंट गेट में नकली कतार लोड',
       'refresh': 'रिफ्रेश',
-      'gate_telemetry_updated': 'गेट कतार टेलीमेट्री अपडेट की गई।',
+      'gate_telemetry_updated': 'नकली गेट टेलीमेट्री रिफ्रेश की गई।',
       // Queue tracking
-      'live_mandi_queue': 'लाइव मंडी कतार',
-      'your_live_token': 'आपका लाइव टोकन',
+      'live_mandi_queue': 'मंडी कतार (डेमो)',
+      'your_live_token': 'आपका टोकन',
       'assigned_gate': 'नियुक्त गेट',
       'farmers_ahead': 'किसान आगे',
       'estimated_wait': 'अनुमानित प्रतीक्षा',
@@ -493,8 +580,11 @@ class S {
       'total_amount': 'कुल राशि',
       'bank_account': 'बैंक खाता',
       'utr_reference': 'UTR / संदर्भ',
-      'download_pdf': 'PDF डाउनलोड करें',
-      'slip_downloaded': 'ई-स्लिप डिवाइस स्टोरेज में डाउनलोड की गई',
+      'download_pdf': 'ई-स्लिप पूर्वावलोकन (डेमो)',
+      'slip_downloaded':
+          'डेमो ई-स्लिप पूर्वावलोकन — कोई PDF फ़ाइल डाउनलोड नहीं होती।',
+      'utr_pending_clearance': 'बैंक क्लीयरेंस प्रतीक्षित (डेमो)',
+      'utr_awaiting_slip': 'प्रोक्योरमेंट स्लिप प्रतीक्षित (डेमो)',
       // Market prices
       'mandi_crop_prices': 'मंडी फसल मूल्य',
       'search_crops': 'फसलें खोजें (जैसे गेहूं, धान)...',
@@ -570,7 +660,12 @@ class S {
       'min_price': 'न्यूनतम मूल्य',
       'max_price': 'अधिकतम मूल्य',
       'govt_msp': 'सरकारी एमएसपी',
-      'price_banner': 'लखनऊ सेंट्रल मंडी • आज की दरें',
+      'price_banner': 'नमूना दरें • डेमो डेटा',
+      'price_banner_live': 'लाइव मंडी दरें',
+      'price_source_govt': 'स्रोत: data.gov.in (भारत सरकार)',
+      'simulated_price_notice': 'ये फसल दरें केवल प्रदर्शन के नमूने हैं — यह लाइव मंडी फ़ीड नहीं है। data.gov.in API कुंजी कॉन्फ़िगर होने पर यहाँ सरकारी लाइव दरें दिखेंगी।',
+      'live_prices_unavailable': 'सरकारी लाइव दरें अभी उपलब्ध नहीं हैं — नमूना (डेमो) दरें दिख रही हैं।',
+      'sample_rates_caption': 'नमूना दरें (डेमो डेटा) — लाइव मंडी फ़ीड नहीं',
       // Targeted additions
       'available': 'उपलब्ध',
       'filling_fast': 'तेज़ी से भर रहा है',
@@ -653,12 +748,12 @@ class S {
       'step_completed': 'पूर्ण',
       'step_completed_desc': 'ई-जे फॉर्म जनरेट हुआ और भुगतान भेजा गया',
       // Live queue
-      'live_badge': 'लाइव',
+      'live_badge': 'डेमो',
       'last_updated': 'अंतिम अपडेट',
       'refreshing_in': 'रिफ्रेश हो रहा है',
       'seconds_suffix': 'से',
-      'auto_refresh_30s': 'हर 30 सेकंड में ऑटो-रिफ्रेश',
-      'fetching_live_data': 'लाइव कतार डेटा लाया जा रहा है...',
+      'auto_refresh_30s': 'हर 30 सेकंड में ऑटो-रिफ्रेश (डेमो)',
+      'fetching_live_data': 'नकली कतार डेटा लाया जा रहा है...',
       'queue_refresh_error':
           'कतार रिफ्रेश नहीं हो सकी। पिछला डेटा दिखाया जा रहा है।',
       'tap_to_retry': 'पुनः प्रयास करने के लिए टैप करें',
@@ -668,7 +763,8 @@ class S {
       'ai_insight_text': 'मंडी में उच्च गुणवत्ता वाली आवक के कारण गेहूं की कीमतें आज स्थिर और हल्की तेजी के साथ रह सकती हैं। आदर्श आवक समय: गेट 2, सुबह 11:00 बजे से पहले।',
       // Cancel booking
       'cancel_booking': 'बुकिंग रद्द करें',
-      'cancel_booking_confirm': 'क्या आप वाकई इस बुकिंग को रद्द करना चाहते हैं?',
+      'cancel_booking_confirm':
+          'क्या आप वाकई इस बुकिंग को रद्द करना चाहते हैं?',
       'keep_booking': 'बुकिंग रखें',
       'confirm_cancel': 'बुकिंग रद्द करें',
       'booking_cancelled_success': 'बुकिंग सफलतापूर्वक रद्द हो गई।',
@@ -681,17 +777,21 @@ class S {
       'which_time_slot': 'किस समय का स्लॉट चाहिए?',
       'say_crop_name': 'फसल का नाम बोलें, जैसे गेहूं, धान',
       'say_time': 'समय बोलें, जैसे 9 बजे, 11 बजे',
-      'voice_unavailable': 'आवाज़ बुकिंग उपलब्ध नहीं है। आप मैनुअल बुक कर सकते हैं।',
+      'voice_unavailable':
+          'आवाज़ बुकिंग उपलब्ध नहीं है। आप मैनुअल बुक कर सकते हैं।',
       'voice_error': 'पहचान नहीं सके। कृपया पुनः प्रयास करें।',
       'no_speech_detected': 'कोई आवाज़ नहीं सुनी। कृपया पुनः प्रयास करें।',
-      'microphone_permission_denied': 'आवाज़ बुकिंग के लिए माइक्रोफ़ोन अनुमति आवश्यक है।',
+      'microphone_permission_denied':
+          'आवाज़ बुकिंग के लिए माइक्रोफ़ोन अनुमति आवश्यक है।',
       'checking_availability': 'उपलब्धता जाँच रहे हैं...',
       'slot_available': 'स्लॉट उपलब्ध है',
       'slot_unavailable': 'अनुरोधित स्लॉट उपलब्ध नहीं है',
-      'best_available_booked': 'सर्वोत्तम उपलब्ध स्लॉट स्वचालित रूप से बुक किया गया',
+      'best_available_booked':
+          'सर्वोत्तम उपलब्ध स्लॉट स्वचालित रूप से बुक किया गया',
       'voice_booking_success': 'टोकन सफलतापूर्वक बुक हो गया',
       'voice_booking_error': 'बुकिंग पूरी नहीं हो सकी। कृपया पुनः प्रयास करें।',
-      'no_available_slots': 'कोई उपलब्ध स्लॉट नहीं मिला। कृपया मैनुअल बुकिंग करें।',
+      'no_available_slots':
+          'कोई उपलब्ध स्लॉट नहीं मिला। कृपया मैनुअल बुकिंग करें।',
       'crop_selected': 'फसल चुनी गई',
       'invalid_crop': 'फसल पहचान नहीं सके। कृपया पुनः प्रयास करें।',
       'invalid_time': 'समय समझ नहीं आया। कृपया पुनः प्रयास करें।',
@@ -712,19 +812,24 @@ class S {
       'grant_mic_permission': 'माइक्रोफोन अनुमति दें',
       // Voice booking spoken announcements ({...} placeholders are replaced)
       'voice_crop_prompt': 'कृपया फसल का नाम बताइए। जैसे गेहूं, धान या सरसों।',
-      'voice_time_prompt': 'आपने {crop} चुना है। कृपया बताइए कि किस समय का स्लॉट चाहिए।',
-      'voice_checking_announcement': 'आपने {time} का समय चुना है। स्लॉट उपलब्धता जांची जा रही है।',
-      'voice_slot_available_announcement': '{time} का स्लॉट उपलब्ध है। आपका टोकन बुक किया जा रहा है।',
+      'voice_time_prompt':
+          'आपने {crop} चुना है। कृपया बताइए कि किस समय का स्लॉट चाहिए।',
+      'voice_checking_announcement':
+          'आपने {time} का समय चुना है। स्लॉट उपलब्धता जांची जा रही है।',
+      'voice_slot_available_announcement':
+          '{time} का स्लॉट उपलब्ध है। आपका टोकन बुक किया जा रहा है।',
       'voice_fallback_announcement': '{requested} का स्लॉट उपलब्ध नहीं है। आपके लिए {booked} का सबसे नज़दीकी उपलब्ध स्लॉट बुक किया जा रहा है।',
       'voice_success_announcement': 'आपका टोकन सफलतापूर्वक बुक हो गया है। आपका समय {time} है। आपका टोकन नंबर {token} है।',
       'voice_permission_denied_speech': 'माइक की अनुमति नहीं मिली। कृपया माइक की अनुमति दें और दोबारा कोशिश करें।',
       'voice_not_understood': 'मुझे समझ नहीं आया। कृपया दोबारा बोलिए।',
-      'voice_repeat_crop': 'फसल पहचान में नहीं आई। कृपया फसल का नाम दोबारा बोलिए।',
+      'voice_repeat_crop':
+          'फसल पहचान में नहीं आई। कृपया फसल का नाम दोबारा बोलिए।',
       'voice_repeat_time': 'समय समझ में नहीं आया। कृपया समय दोबारा बोलिए।',
       'voice_no_slots_announcement': 'क्षमा करें, इस फसल के लिए कोई स्लॉट उपलब्ध नहीं है। कृपया दूसरा समय चुनें या मैन्युअल बुकिंग करें।',
       'voice_tts_error': 'वॉइस सहायक शुरू नहीं हो पाया। कृपया अपनी डिवाइस सेटिंग जांच कर दोबारा कोशिश करें।',
       'reason_label': 'कारण',
-      'fallback_reason': 'अनुरोधित स्लॉट उपलब्ध नहीं था - नजदीकी उपलब्ध स्लॉट बुक किया गया।',
+      'fallback_reason':
+          'अनुरोधित स्लॉट उपलब्ध नहीं था - नजदीकी उपलब्ध स्लॉट बुक किया गया।',
     },
     'te': {
       'app_title': 'అగ్రి క్యూ',
@@ -1166,6 +1271,10 @@ class S {
     'Aadhaar number must be exactly 12 digits': 'v_aadhaar_length',
     'Aadhaar number cannot start with 0 or 1': 'v_aadhaar_start',
     'Invalid Aadhaar number (checksum failed)': 'v_aadhaar_checksum',
+    'Please enter your email address': 'email_required_msg',
+    'Password must be at least 6 characters': 'password_min6_msg',
+    'Passwords do not match': 'passwords_do_not_match',
+    'Please confirm your password': 'password_required',
   };
 
   String translateValidation(String rawError) {
@@ -1203,6 +1312,22 @@ class S {
   String get useOtpInstead => _t('use_otp_instead');
   String get otpHint => _t('otp_hint');
   String get invalidLogin => _t('invalid_login');
+  String get emailAddress => _t('email_address');
+  String get loginWithEmail => _t('login_with_email');
+  String get emailLoginHint => _t('email_login_hint');
+  String get orDivider => _t('or_divider');
+  String get continueWithGoogle => _t('continue_with_google');
+  String get googleSignInUnavailable => _t('google_sign_in_unavailable');
+  String get googleSignInFailed => _t('google_sign_in_failed');
+  String get firebaseUnconfigured => _t('firebase_unconfigured');
+  String get resetViaEmailTitle => _t('reset_via_email_title');
+  String get resetViaEmailDesc => _t('reset_via_email_desc');
+  String get sendResetLink => _t('send_reset_link');
+  String get resetEmailSent => _t('reset_email_sent');
+  String get confirmPassword => _t('confirm_password');
+  String get retypePasswordHint => _t('retype_password_hint');
+  String get passwordsDoNotMatch => _t('passwords_do_not_match');
+  String get passwordRequired => _t('password_required');
 
   // Registration
   String get createAccount => _t('create_account');
@@ -1238,6 +1363,24 @@ class S {
       _t('redirecting_to_registration').replaceAll(r'$_countdown', '$seconds');
   String get registerNow => _t('register_now');
   String get tryAnother => _t('try_another');
+
+  // Demo mode
+  String get demoModeTitle => _t('demo_mode_title');
+  String get demoModeBody => _t('demo_mode_body');
+  String get demoModeTitleReal => _t('demo_mode_title_real');
+  String get demoModeBodyReal => _t('demo_mode_body_real');
+
+  // Auth flow errors
+  String get otpSendFailed => _t('otp_send_failed');
+  String get mobileAlreadyRegistered => _t('mobile_already_registered');
+
+  // Simulated data disclosures
+  String get simulatedDataLabel => _t('simulated_data_label');
+  String get simulatedQueueNotice => _t('simulated_queue_notice');
+  String get simulatedPaymentNotice => _t('simulated_payment_notice');
+  String get simulatedNotificationsNotice =>
+      _t('simulated_notifications_notice');
+  String get simulatedTelemetryNotice => _t('simulated_telemetry_notice');
 
   // Home
   String get goodMorning => _t('good_morning');
@@ -1319,6 +1462,8 @@ class S {
   String get utrReference => _t('utr_reference');
   String get downloadPdf => _t('download_pdf');
   String get slipDownloaded => _t('slip_downloaded');
+  String get utrPendingClearance => _t('utr_pending_clearance');
+  String get utrAwaitingSlip => _t('utr_awaiting_slip');
 
   // Market prices
   String get mandiCropPrices => _t('mandi_crop_prices');
@@ -1400,6 +1545,11 @@ class S {
   String get maxPrice => _t('max_price');
   String get govtMsp => _t('govt_msp');
   String get priceBanner => _t('price_banner');
+  String get priceBannerLive => _t('price_banner_live');
+  String get priceSourceGovt => _t('price_source_govt');
+  String get simulatedPriceNotice => _t('simulated_price_notice');
+  String get livePricesUnavailable => _t('live_prices_unavailable');
+  String get sampleRatesCaption => _t('sample_rates_caption');
 
   // Targeted additions
   String get available => _t('available');
@@ -1567,13 +1717,16 @@ class S {
       _t('voice_checking_announcement').replaceAll('{time}', time);
   String voiceSlotAvailableAnnouncement(String time) =>
       _t('voice_slot_available_announcement').replaceAll('{time}', time);
-  String voiceFallbackAnnouncement(String requested, String booked) => _t(
-        'voice_fallback_announcement',
-      ).replaceAll('{requested}', requested).replaceAll('{booked}', booked);
-  String voiceSuccessAnnouncement(String time, String token) => _t(
-        'voice_success_announcement',
-      ).replaceAll('{time}', time).replaceAll('{token}', token);
-  String get voicePermissionDeniedSpeech => _t('voice_permission_denied_speech');
+  String voiceFallbackAnnouncement(String requested, String booked) =>
+      _t('voice_fallback_announcement')
+          .replaceAll('{requested}', requested)
+          .replaceAll('{booked}', booked);
+  String voiceSuccessAnnouncement(String time, String token) =>
+      _t('voice_success_announcement')
+          .replaceAll('{time}', time)
+          .replaceAll('{token}', token);
+  String get voicePermissionDeniedSpeech =>
+      _t('voice_permission_denied_speech');
   String get voiceNotUnderstood => _t('voice_not_understood');
   String get voiceRepeatCrop => _t('voice_repeat_crop');
   String get voiceRepeatTime => _t('voice_repeat_time');
@@ -1600,15 +1753,18 @@ class S {
   String spokenTime(int hour) {
     final h12 = hour % 12 == 0 ? 12 : hour % 12;
     if (_langProvider.currentLanguage.code == 'hi') {
-      final dayPart =
-          hour >= 6 && hour < 12
-              ? 'सुबह'
-              : hour >= 12 && hour < 16
-              ? 'दोपहर'
-              : hour >= 16 && hour < 20
-              ? 'शाम'
-              : 'रात';
-      final digits = h12.toString().split('').map((d) => _hiDigits[int.parse(d)]!).join();
+      final dayPart = hour >= 6 && hour < 12
+          ? 'सुबह'
+          : hour >= 12 && hour < 16
+          ? 'दोपहर'
+          : hour >= 16 && hour < 20
+          ? 'शाम'
+          : 'रात';
+      final digits = h12
+          .toString()
+          .split('')
+          .map((d) => _hiDigits[int.parse(d)]!)
+          .join();
       return '$dayPart $digits बजे';
     }
     final meridiem = hour < 12 ? 'AM' : 'PM';

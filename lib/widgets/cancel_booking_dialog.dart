@@ -61,10 +61,7 @@ class _CancelBookingDialogState extends State<CancelBookingDialog> {
       content: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Text(
-            s.cancelBookingConfirm,
-            textAlign: TextAlign.center,
-          ),
+          Text(s.cancelBookingConfirm, textAlign: TextAlign.center),
           const SizedBox(height: 16),
           Container(
             width: double.infinity,
@@ -89,10 +86,17 @@ class _CancelBookingDialogState extends State<CancelBookingDialog> {
         ],
       ),
       actions: [
-        TextButton(
-          onPressed: _isCancelling
-              ? null
-              : () => Navigator.of(context).pop(),
+        // Keep Booking mirrors the Cancel button's shape and sizing so the
+        // pair is visually consistent, but in the app's green theme.
+        ElevatedButton(
+          onPressed: _isCancelling ? null : () => Navigator.of(context).pop(),
+          style: ElevatedButton.styleFrom(
+            backgroundColor: AppColors.primaryGreen,
+            foregroundColor: Colors.white,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(AppDimensions.radiusMedium),
+            ),
+          ),
           child: Text(s.keepBooking),
         ),
         ElevatedButton(
@@ -100,6 +104,9 @@ class _CancelBookingDialogState extends State<CancelBookingDialog> {
           style: ElevatedButton.styleFrom(
             backgroundColor: AppColors.statusAlert,
             foregroundColor: Colors.white,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(AppDimensions.radiusMedium),
+            ),
           ),
           child: _isCancelling
               ? const SizedBox(
@@ -133,10 +140,7 @@ class _CancelBookingDialogState extends State<CancelBookingDialog> {
         Expanded(
           child: Text(
             value,
-            style: const TextStyle(
-              fontSize: 13,
-              fontWeight: FontWeight.w600,
-            ),
+            style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w600),
           ),
         ),
       ],

@@ -9,6 +9,7 @@ import '../models/queue.dart';
 import '../providers/queue_provider.dart';
 import '../utils/formatters.dart';
 import '../widgets/info_card.dart';
+import '../widgets/simulated_data_notice.dart';
 import '../widgets/status_badge.dart';
 
 class QueueTrackingScreen extends StatefulWidget {
@@ -116,6 +117,10 @@ class _QueueTrackingScreenState extends State<QueueTrackingScreen>
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
+              SimulatedDataNotice(
+                title: s.simulatedDataLabel,
+                message: s.simulatedQueueNotice,
+              ),
               Container(
                 padding: const EdgeInsets.symmetric(
                   horizontal: 12,

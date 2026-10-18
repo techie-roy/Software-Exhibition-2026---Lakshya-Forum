@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+
 import '../app/constants.dart';
 import '../app/localizations.dart';
 import 'info_card.dart';
@@ -63,10 +64,7 @@ class TokenCard extends StatelessWidget {
                   ),
                 ],
               ),
-              StatusBadge(
-                label: status,
-                type: BadgeType.success,
-              ),
+              StatusBadge(label: status, type: BadgeType.success),
             ],
           ),
           const SizedBox(height: 16),
@@ -74,10 +72,15 @@ class TokenCard extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               Container(
-                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 16,
+                  vertical: 10,
+                ),
                 decoration: BoxDecoration(
                   color: AppColors.surfacePaleGreen,
-                  borderRadius: BorderRadius.circular(AppDimensions.radiusMedium),
+                  borderRadius: BorderRadius.circular(
+                    AppDimensions.radiusMedium,
+                  ),
                   border: Border.all(
                     color: AppColors.primaryGreen.withValues(alpha: 0.3),
                     width: 1.5,

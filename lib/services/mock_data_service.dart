@@ -79,7 +79,13 @@ class MockDataService {
     ),
   ];
 
-  List<Booking> get allBookings => [activeBooking, ..._bookingHistory];
+  /// All bookings in the system, with the active booking first. The active
+  /// booking is never duplicated: ids are de-duplicated defensively so a
+  /// booking cannot appear both as [activeBooking] and in the history list.
+  List<Booking> get allBookings {
+    final seenIds = <String>{activeBooking.id};
+    return [activeBooking, ..._bookingHistory.where((b) => seenIds.add(b.id))];
+  }
 
   // Live gate crowd statuses
   final List<MandiGateStatus> gateStatuses = const [
@@ -457,32 +463,92 @@ class MockDataService {
     ),
   ];
 
+  /// Issues a collision-free crop-prefix token like `W-001` or `P-001` for a
+  /// booking at [slot]'s centre on [slot]'s date.
+  ///
+  /// Scope and collisions: numbering runs per crop-prefix inside the
+  /// centre + date scope, and every candidate is re-checked against all
+  /// tokens already issued in that scope — including different crops that
+  /// share a first letter (maize vs mustard, potato vs paddy) — so a
+  /// duplicate can never be handed out within the scope. Legacy-format seeds
+  /// (e.g. `A-125`) are ignored by the counter because they predate the
+  /// crop-prefix scheme, but they still exist as data.
+  ///
+  /// NOTE: this runs inside a single in-memory demo service instance. A local
+  /// counter is NOT globally safe across devices or restarts — production
+  /// must issue tokens server-side with an atomic counter scoped by
+  /// centre + date + crop. That backend does not exist yet; this is a
+  /// documented blocker, not a claim of distributed safety.
+  String _issueTokenNumber(MandiSlot slot) {
+    final prefix = slot.crop.substring(0, 1).toUpperCase();
+    final scope = allBookings
+        .where((b) => b.mandiId == slot.mandiId && _sameDay(b.date, slot.date))
+        .toList();
+
+    var highest = 0;
+    for (final booking in scope) {
+      final match = RegExp(r'^([A-Z])-(\d+)$').firstMatch(booking.tokenNumber);
+      if (match != null && match.group(1) == prefix) {
+        final value = int.tryParse(match.group(2) ?? '') ?? 0;
+        if (value > highest) highest = value;
+      }
+    }
+
+    var candidate = highest + 1;
+    String token() => '$prefix-${candidate.toString().padLeft(3, '0')}';
+    while (scope.any((b) => b.tokenNumber == token())) {
+      candidate++;
+    }
+    return token();
+  }
+
+  static bool _sameDay(DateTime a, DateTime b) =>
+      a.year == b.year && a.month == b.month && a.day == b.day;
+
   Booking bookSlot({
     required MandiSlot slot,
     required String farmerId,
     required String farmerName,
   }) {
+    // Enforce capacity against the shared slot list so repeated or concurrent
+    // booking attempts can never exceed the configured capacity.
+    final slotIndex = _availableSlots.indexWhere((s) => s.id == slot.id);
+    final canonical = slotIndex == -1 ? slot : _availableSlots[slotIndex];
+    if (canonical.availableCapacity <= 0) {
+      throw StateError('Slot ${canonical.id} is at full capacity');
+    }
+
     final newBookingId = 'AQ-2026-${(8800 + _bookingHistory.length + 1)}';
-    final tokenLetter = slot.crop.substring(0, 1).toUpperCase();
-    final tokenNumber = '$tokenLetter-${(125 + _bookingHistory.length + 1)}';
+    final tokenNumber = _issueTokenNumber(canonical);
 
     final newBooking = Booking(
       id: newBookingId,
       tokenNumber: tokenNumber,
       farmerId: farmerId,
       farmerName: farmerName,
-      mandiId: slot.mandiId,
-      mandiName: slot.mandiName,
-      crop: slot.crop,
-      date: slot.date,
-      timeRange: slot.timeRange,
-      gate: slot.gate,
+      mandiId: canonical.mandiId,
+      mandiName: canonical.mandiName,
+      crop: canonical.crop,
+      date: canonical.date,
+      timeRange: canonical.timeRange,
+      gate: canonical.gate,
       status: BookingStatus.confirmed,
       createdAt: DateTime.now(),
     );
 
+    if (slotIndex != -1) {
+      _reserveSlotCapacity(slotIndex);
+    }
+
+    // Move the outgoing active booking into history so nothing is lost, and
+    // ensure the same booking never lives in both activeBooking and history.
+    final previousActive = activeBooking;
     activeBooking = newBooking;
-    _bookingHistory.insert(0, newBooking);
+    _bookingHistory.removeWhere(
+      (b) => b.id == newBooking.id || b.id == previousActive.id,
+    );
+    _bookingHistory.insert(0, previousActive);
+
     return newBooking;
   }
 
@@ -518,6 +584,15 @@ class MockDataService {
     }
   }
 
+  void _reserveSlotCapacity(int index) {
+    final slot = _availableSlots[index];
+    final reserved = (slot.bookedCount + 1).clamp(0, slot.totalCapacity);
+    _availableSlots[index] = slot.copyWith(
+      bookedCount: reserved,
+      status: _statusFor(reserved, slot.totalCapacity),
+    );
+  }
+
   void _releaseSlotCapacity(Booking booking) {
     for (var i = 0; i < _availableSlots.length; i++) {
       final slot = _availableSlots[i];
@@ -527,15 +602,17 @@ class MockDataService {
         final freedCount = (slot.bookedCount - 1).clamp(0, slot.totalCapacity);
         _availableSlots[i] = slot.copyWith(
           bookedCount: freedCount,
-          status: freedCount >= slot.totalCapacity
-              ? SlotStatus.full
-              : freedCount >= slot.totalCapacity * 0.8
-                  ? SlotStatus.fillingFast
-                  : SlotStatus.available,
+          status: _statusFor(freedCount, slot.totalCapacity),
         );
         break;
       }
     }
+  }
+
+  SlotStatus _statusFor(int bookedCount, int totalCapacity) {
+    if (bookedCount >= totalCapacity) return SlotStatus.full;
+    if (bookedCount >= totalCapacity * 0.8) return SlotStatus.fillingFast;
+    return SlotStatus.available;
   }
 
   bool _isSameDay(DateTime a, DateTime b) =>

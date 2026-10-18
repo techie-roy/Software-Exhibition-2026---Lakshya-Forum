@@ -53,35 +53,50 @@ void main() {
       expect(AadhaarValidator.validateFormat(validNumber), isNull);
     });
 
-    test('Verhoeff algorithm detects single digit errors and transpositions', () {
-      const base = '39281745628';
-      final check = computeVerhoeffCheckDigit(base);
-      final validNumber = '$base$check';
+    test(
+      'Verhoeff algorithm detects single digit errors and transpositions',
+      () {
+        const base = '39281745628';
+        final check = computeVerhoeffCheckDigit(base);
+        final validNumber = '$base$check';
 
-      // Alter check digit
-      final corrupted = '$base${(check + 1) % 10}';
-      expect(AadhaarValidator.validateVerhoeff(corrupted), isFalse);
-      expect(AadhaarValidator.validateFormat(corrupted), contains('checksum'));
+        // Alter check digit
+        final corrupted = '$base${(check + 1) % 10}';
+        expect(AadhaarValidator.validateVerhoeff(corrupted), isFalse);
+        expect(
+          AadhaarValidator.validateFormat(corrupted),
+          contains('checksum'),
+        );
 
-      // Transposition
-      final chars = validNumber.split('');
-      final temp = chars[0];
-      chars[0] = chars[1];
-      chars[1] = temp;
-      final transposed = chars.join();
-      expect(AadhaarValidator.validateVerhoeff(transposed), isFalse);
-    });
+        // Transposition
+        final chars = validNumber.split('');
+        final temp = chars[0];
+        chars[0] = chars[1];
+        chars[1] = temp;
+        final transposed = chars.join();
+        expect(AadhaarValidator.validateVerhoeff(transposed), isFalse);
+      },
+    );
 
     test('Rejects invalid lengths', () {
       expect(AadhaarValidator.validateFormat('12345'), contains('12 digits'));
-      expect(AadhaarValidator.validateFormat('12345678901234'), contains('12 digits'));
+      expect(
+        AadhaarValidator.validateFormat('12345678901234'),
+        contains('12 digits'),
+      );
       expect(AadhaarValidator.validateFormat(''), contains('12-digit'));
       expect(AadhaarValidator.validateFormat(null), contains('12-digit'));
     });
 
     test('Rejects numbers starting with 0 or 1', () {
-      expect(AadhaarValidator.validateFormat('012345678901'), contains('cannot start with 0 or 1'));
-      expect(AadhaarValidator.validateFormat('112345678901'), contains('cannot start with 0 or 1'));
+      expect(
+        AadhaarValidator.validateFormat('012345678901'),
+        contains('cannot start with 0 or 1'),
+      );
+      expect(
+        AadhaarValidator.validateFormat('112345678901'),
+        contains('cannot start with 0 or 1'),
+      );
     });
 
     test('Masking and grouping formats correctly', () {
@@ -94,11 +109,19 @@ void main() {
       expect(masked, endsWith(validNumber.substring(8)));
 
       final grouped = AadhaarValidator.formatGrouped(validNumber);
-      expect(grouped, equals('${validNumber.substring(0, 4)} ${validNumber.substring(4, 8)} ${validNumber.substring(8)}'));
+      expect(
+        grouped,
+        equals(
+          '${validNumber.substring(0, 4)} ${validNumber.substring(4, 8)} ${validNumber.substring(8)}',
+        ),
+      );
     });
 
     test('Verification disclaimer is present and clear', () {
-      expect(AadhaarValidator.verificationDisclaimer, contains('Format validation only'));
+      expect(
+        AadhaarValidator.verificationDisclaimer,
+        contains('Format validation only'),
+      );
       expect(AadhaarValidator.verificationDisclaimer, contains('UIDAI'));
     });
   });

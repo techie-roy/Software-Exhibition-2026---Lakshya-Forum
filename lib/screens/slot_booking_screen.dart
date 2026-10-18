@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import '../app/constants.dart';
 import '../app/localizations.dart';
 import '../app/routes.dart';
+import '../models/booking.dart';
 import '../models/farmer.dart';
 import '../models/slot.dart';
 import '../providers/auth_provider.dart';
@@ -50,33 +51,32 @@ class _SlotBookingScreenState extends State<SlotBookingScreen> {
   void _confirmBooking(MandiSlot slot) {
     final bookingProvider = context.read<BookingProvider>();
     final authProvider = context.read<AuthProvider>();
-    final farmer =
-        authProvider.currentFarmer ??
-        const Farmer(
-          id: 'FID-UP-78219',
-          name: 'Rajesh Kumar',
-          mobile: '+91 9876543210',
-          mandiId: 'MND-LKO-01',
-          mandiName: 'Lucknow Central Mandi',
-          mandiAddress: 'Transport Nagar, Lucknow, UP',
-          landSizeAcres: 6.5,
-          village: 'Malihabad',
-          district: 'Lucknow',
-          state: 'Uttar Pradesh',
-          kisanCreditCard: 'KCC-8821-4412-9901',
-          aadhaarMasked: 'XXXX-XXXX-4819',
-          bankAccountMasked: 'SBI ••••••••3912',
-          bankName: 'State Bank of India',
-          avatarInitials: 'RK',
-        );
+    final farmer = authProvider.displayFarmer;
 
-    final newBooking = bookingProvider.bookSlot(slot: slot, farmer: farmer);
+    final newBooking = _tryCreateBooking(bookingProvider, slot, farmer);
+    if (newBooking == null) {
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text(S.of(context).slotFull)));
+      return;
+    }
 
     Navigator.pushNamed(
       context,
       AppRoutes.bookingConfirmation,
       arguments: newBooking,
     );
+  }
+
+  Booking? _tryCreateBooking(
+    BookingProvider bookingProvider,
+    MandiSlot slot,
+    Farmer farmer,
+  ) {
+    try {
+      return bookingProvider.bookSlot(slot: slot, farmer: farmer);
+    } on StateError {
+      return null;
+    }
   }
 
   @override

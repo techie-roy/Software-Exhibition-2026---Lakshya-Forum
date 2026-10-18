@@ -1,13 +1,8 @@
 import 'package:flutter/material.dart';
+
 import '../app/constants.dart';
 
-enum BadgeType {
-  success,
-  warning,
-  danger,
-  neutral,
-  info,
-}
+enum BadgeType { success, warning, danger, neutral, info }
 
 class StatusBadge extends StatelessWidget {
   final String label;

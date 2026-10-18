@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+
 import '../app/constants.dart';
 
 class PrimaryButton extends StatelessWidget {
@@ -27,7 +28,9 @@ class PrimaryButton extends StatelessWidget {
         style: ElevatedButton.styleFrom(
           backgroundColor: AppColors.primaryGreen,
           foregroundColor: Colors.white,
-          disabledBackgroundColor: AppColors.primaryGreen.withValues(alpha: 0.6),
+          disabledBackgroundColor: AppColors.primaryGreen.withValues(
+            alpha: 0.6,
+          ),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(AppDimensions.radiusMedium),
           ),

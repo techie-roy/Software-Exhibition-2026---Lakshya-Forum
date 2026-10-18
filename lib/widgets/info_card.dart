@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+
 import '../app/constants.dart';
 
 class InfoCard extends StatelessWidget {
@@ -43,7 +44,8 @@ class InfoCard extends StatelessWidget {
         child: InkWell(
           onTap: onTap,
           child: Padding(
-            padding: padding ?? const EdgeInsets.all(AppDimensions.paddingMedium),
+            padding:
+                padding ?? const EdgeInsets.all(AppDimensions.paddingMedium),
             child: child,
           ),
         ),

@@ -1,6 +1,8 @@
 import 'dart:io';
+
 import 'package:flutter/foundation.dart';
 import 'package:google_mlkit_text_recognition/google_mlkit_text_recognition.dart';
+
 import '../utils/aadhaar_validator.dart';
 
 /// Result object for Aadhaar OCR scanning.
@@ -16,10 +18,7 @@ class AadhaarOcrResult {
   });
 
   factory AadhaarOcrResult.success(List<String> candidates) {
-    return AadhaarOcrResult(
-      candidates: candidates,
-      isSuccess: true,
-    );
+    return AadhaarOcrResult(candidates: candidates, isSuccess: true);
   }
 
   factory AadhaarOcrResult.failure(String message) {
@@ -76,7 +75,9 @@ class AadhaarOcrService {
       final raw = match.group(1);
       if (raw != null) {
         final clean = AadhaarValidator.normalize(raw);
-        if (clean.length == 12 && !clean.startsWith('0') && !clean.startsWith('1')) {
+        if (clean.length == 12 &&
+            !clean.startsWith('0') &&
+            !clean.startsWith('1')) {
           candidates.add(clean);
         }
       }
@@ -91,7 +92,9 @@ class AadhaarOcrService {
       final raw = match.group(1);
       if (raw != null) {
         final clean = AadhaarValidator.normalize(raw);
-        if (clean.length == 12 && !clean.startsWith('0') && !clean.startsWith('1')) {
+        if (clean.length == 12 &&
+            !clean.startsWith('0') &&
+            !clean.startsWith('1')) {
           candidates.add(clean);
         }
       }
@@ -129,7 +132,11 @@ class AadhaarOcrService {
   /// Heuristic: looks for lines containing "Name" or the Hindi equivalent,
   /// then returns the next non-empty, non-label line as the name.
   static String? extractName(String text) {
-    final lines = text.split('\n').map((l) => l.trim()).where((l) => l.isNotEmpty).toList();
+    final lines = text
+        .split('\n')
+        .map((l) => l.trim())
+        .where((l) => l.isNotEmpty)
+        .toList();
     for (int i = 0; i < lines.length; i++) {
       final lower = lines[i].toLowerCase();
       if (lower.contains('name') || lower.contains('\u0928\u093E\u092E')) {
@@ -162,10 +169,13 @@ class AadhaarOcrService {
     int dobIdx = -1;
     for (int i = 0; i < lines.length; i++) {
       final lower = lines[i].toLowerCase();
-      if (lower.contains('government') || lower.contains('\u0938\u0930\u0915\u093E\u0930')) {
+      if (lower.contains('government') ||
+          lower.contains('\u0938\u0930\u0915\u093E\u0930')) {
         govIdx = i;
       }
-      if (lower.contains('dob') || lower.contains('date of birth') || lower.contains('\u091C\u0928\u094D\u092E \u0924\u093F\u0925\u093F')) {
+      if (lower.contains('dob') ||
+          lower.contains('date of birth') ||
+          lower.contains('\u091C\u0928\u094D\u092E \u0924\u093F\u0925\u093F')) {
         dobIdx = i;
         break;
       }
@@ -174,7 +184,9 @@ class AadhaarOcrService {
       for (int i = govIdx + 1; i < dobIdx; i++) {
         final line = lines[i];
         final lower = line.toLowerCase();
-        if (lower.contains('govt') || lower.contains('authority') || line.length < 2) {
+        if (lower.contains('govt') ||
+            lower.contains('authority') ||
+            line.length < 2) {
           continue;
         }
         final cleaned = line
@@ -196,21 +208,27 @@ class AadhaarOcrService {
   /// plausible date pattern in the text.
   static String? extractDob(String text) {
     // Look near DOB keyword
-    final dobKeywords = ['dob', 'date of birth', '\u091C\u0928\u094D\u092E \u0924\u093F\u0925\u093F'];
+    final dobKeywords = [
+      'dob',
+      'date of birth',
+      '\u091C\u0928\u094D\u092E \u0924\u093F\u0925\u093F',
+    ];
     final lines = text.split('\n');
     for (final line in lines) {
       final lower = line.toLowerCase();
       for (final keyword in dobKeywords) {
         if (lower.contains(keyword)) {
-          final dateMatch = RegExp(
-            r'(\d{2})[/\-](\d{2})[/\-](\d{4})',
-          ).firstMatch(line);
+          final dateMatch = RegExp(r'(\d{2})[/\-](\d{2})[/\-](\d{4})')
+              .firstMatch(line);
           if (dateMatch != null) {
             return '${dateMatch.group(1)}/${dateMatch.group(2)}/${dateMatch.group(3)}';
           }
           // Date might be on the same line after the keyword
-          final afterKeyword = line.substring(line.toLowerCase().indexOf(keyword) + keyword.length);
-          final dateMatch2 = RegExp(r'(\d{2})[/\-](\d{2})[/\-](\d{4})').firstMatch(afterKeyword);
+          final afterKeyword = line.substring(
+            line.toLowerCase().indexOf(keyword) + keyword.length,
+          );
+          final dateMatch2 = RegExp(r'(\d{2})[/\-](\d{2})[/\-](\d{4})')
+              .firstMatch(afterKeyword);
           if (dateMatch2 != null) {
             return '${dateMatch2.group(1)}/${dateMatch2.group(2)}/${dateMatch2.group(3)}';
           }
@@ -278,7 +296,9 @@ class AadhaarOcrService {
     } catch (e) {
       // Never log full details that might include sensitive data
       if (kDebugMode) {
-        debugPrint('Aadhaar OCR processing failed gracefully: ${e.runtimeType}');
+        debugPrint(
+          'Aadhaar OCR processing failed gracefully: ${e.runtimeType}',
+        );
       }
       return AadhaarOcrResult.failure(
         "Couldn't read the Aadhaar number. Please place the document inside the frame and try again.",
@@ -307,7 +327,9 @@ class AadhaarOcrService {
   ///
   /// Returns [AadhaarScanResult] with all extractable fields.
   /// Guarantees immediate deletion of the temporary image file for privacy.
-  static Future<AadhaarScanResult?> processImageFileFull(String filePath) async {
+  static Future<AadhaarScanResult?> processImageFileFull(
+    String filePath,
+  ) async {
     final file = File(filePath);
     TextRecognizer? textRecognizer;
 

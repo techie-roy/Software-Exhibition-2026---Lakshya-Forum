@@ -1,6 +1,7 @@
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:permission_handler/permission_handler.dart';
+
 import '../app/constants.dart';
 import '../app/localizations.dart';
 import '../services/aadhaar_ocr_service.dart';
@@ -120,7 +121,9 @@ class _AadhaarScannerScreenState extends State<AadhaarScannerScreen>
 
   Future<void> _captureAndScan() async {
     final controller = _cameraController;
-    if (controller == null || !controller.value.isInitialized || _isProcessing) {
+    if (controller == null ||
+        !controller.value.isInitialized ||
+        _isProcessing) {
       return;
     }
 
@@ -130,7 +133,9 @@ class _AadhaarScannerScreenState extends State<AadhaarScannerScreen>
 
     try {
       final xfile = await controller.takePicture();
-      final scanResult = await AadhaarOcrService.processImageFileFull(xfile.path);
+      final scanResult = await AadhaarOcrService.processImageFileFull(
+        xfile.path,
+      );
 
       if (!mounted) return;
       setState(() {
@@ -147,16 +152,16 @@ class _AadhaarScannerScreenState extends State<AadhaarScannerScreen>
       setState(() {
         _isProcessing = false;
       });
-      _showNoNumberFoundDialog(
-        S.of(context).couldntReadAadhaar,
-      );
+      _showNoNumberFoundDialog(S.of(context).couldntReadAadhaar);
     }
   }
 
   Future<void> _toggleTorch(CameraController controller) async {
     final nextState = !_isTorchOn;
     try {
-      await controller.setFlashMode(nextState ? FlashMode.torch : FlashMode.off);
+      await controller.setFlashMode(
+        nextState ? FlashMode.torch : FlashMode.off,
+      );
       if (!mounted) return;
       setState(() {
         _isTorchOn = nextState;
@@ -182,7 +187,9 @@ class _AadhaarScannerScreenState extends State<AadhaarScannerScreen>
           height: 56,
           decoration: BoxDecoration(
             shape: BoxShape.circle,
-            color: isOn ? Colors.amber.shade600 : Colors.black.withValues(alpha: 0.55),
+            color: isOn
+                ? Colors.amber.shade600
+                : Colors.black.withValues(alpha: 0.55),
             border: Border.all(
               color: isOn ? Colors.amber.shade300 : Colors.white,
               width: 2,
@@ -211,7 +218,9 @@ class _AadhaarScannerScreenState extends State<AadhaarScannerScreen>
       context: context,
       backgroundColor: Colors.white,
       shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(AppDimensions.radiusLarge)),
+        borderRadius: BorderRadius.vertical(
+          top: Radius.circular(AppDimensions.radiusLarge),
+        ),
       ),
       builder: (context) {
         return SafeArea(
@@ -227,7 +236,9 @@ class _AadhaarScannerScreenState extends State<AadhaarScannerScreen>
                   decoration: BoxDecoration(
                     color: AppColors.statusAlertBg,
                     shape: BoxShape.circle,
-                    border: Border.all(color: AppColors.statusAlert.withValues(alpha: 0.3)),
+                    border: Border.all(
+                      color: AppColors.statusAlert.withValues(alpha: 0.3),
+                    ),
                   ),
                   child: const Icon(
                     Icons.document_scanner_outlined,
@@ -287,7 +298,9 @@ class _AadhaarScannerScreenState extends State<AadhaarScannerScreen>
       enableDrag: false,
       backgroundColor: Colors.white,
       shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(AppDimensions.radiusLarge)),
+        borderRadius: BorderRadius.vertical(
+          top: Radius.circular(AppDimensions.radiusLarge),
+        ),
       ),
       builder: (context) {
         return StatefulBuilder(
@@ -309,7 +322,9 @@ class _AadhaarScannerScreenState extends State<AadhaarScannerScreen>
                       decoration: BoxDecoration(
                         color: AppColors.surfacePaleGreen,
                         shape: BoxShape.circle,
-                        border: Border.all(color: AppColors.primaryGreen.withValues(alpha: 0.3)),
+                        border: Border.all(
+                          color: AppColors.primaryGreen.withValues(alpha: 0.3),
+                        ),
                       ),
                       child: const Icon(
                         Icons.check_circle_outline,
@@ -337,15 +352,26 @@ class _AadhaarScannerScreenState extends State<AadhaarScannerScreen>
                     const SizedBox(height: 20),
 
                     Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 16,
+                        vertical: 14,
+                      ),
                       decoration: BoxDecoration(
                         color: AppColors.surfaceSoftMint,
-                        borderRadius: BorderRadius.circular(AppDimensions.radiusMedium),
-                        border: Border.all(color: AppColors.primaryLight.withValues(alpha: 0.3)),
+                        borderRadius: BorderRadius.circular(
+                          AppDimensions.radiusMedium,
+                        ),
+                        border: Border.all(
+                          color: AppColors.primaryLight.withValues(alpha: 0.3),
+                        ),
                       ),
                       child: Row(
                         children: [
-                          const Icon(Icons.badge_outlined, color: AppColors.primaryGreen, size: 22),
+                          const Icon(
+                            Icons.badge_outlined,
+                            color: AppColors.primaryGreen,
+                            size: 22,
+                          ),
                           const SizedBox(width: 12),
                           Expanded(
                             child: Text(
@@ -360,7 +386,9 @@ class _AadhaarScannerScreenState extends State<AadhaarScannerScreen>
                           ),
                           IconButton(
                             icon: Icon(
-                              isRevealed ? Icons.visibility_off_outlined : Icons.visibility_outlined,
+                              isRevealed
+                                  ? Icons.visibility_off_outlined
+                                  : Icons.visibility_outlined,
                               color: AppColors.primaryLight,
                             ),
                             onPressed: () {
@@ -373,19 +401,33 @@ class _AadhaarScannerScreenState extends State<AadhaarScannerScreen>
                       ),
                     ),
 
-                    if (scanResult.isNameDetected && scanResult.name != null) ...[
+                    if (scanResult.isNameDetected &&
+                        scanResult.name != null) ...[
                       const SizedBox(height: 12),
                       Container(
                         width: double.infinity,
-                        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 16,
+                          vertical: 14,
+                        ),
                         decoration: BoxDecoration(
                           color: AppColors.surfaceSoftMint,
-                          borderRadius: BorderRadius.circular(AppDimensions.radiusMedium),
-                          border: Border.all(color: AppColors.primaryLight.withValues(alpha: 0.3)),
+                          borderRadius: BorderRadius.circular(
+                            AppDimensions.radiusMedium,
+                          ),
+                          border: Border.all(
+                            color: AppColors.primaryLight.withValues(
+                              alpha: 0.3,
+                            ),
+                          ),
                         ),
                         child: Row(
                           children: [
-                            const Icon(Icons.person_outline, color: AppColors.primaryGreen, size: 22),
+                            const Icon(
+                              Icons.person_outline,
+                              color: AppColors.primaryGreen,
+                              size: 22,
+                            ),
                             const SizedBox(width: 12),
                             Expanded(
                               child: Text(
@@ -406,15 +448,28 @@ class _AadhaarScannerScreenState extends State<AadhaarScannerScreen>
                       const SizedBox(height: 12),
                       Container(
                         width: double.infinity,
-                        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 16,
+                          vertical: 14,
+                        ),
                         decoration: BoxDecoration(
                           color: AppColors.surfaceSoftMint,
-                          borderRadius: BorderRadius.circular(AppDimensions.radiusMedium),
-                          border: Border.all(color: AppColors.primaryLight.withValues(alpha: 0.3)),
+                          borderRadius: BorderRadius.circular(
+                            AppDimensions.radiusMedium,
+                          ),
+                          border: Border.all(
+                            color: AppColors.primaryLight.withValues(
+                              alpha: 0.3,
+                            ),
+                          ),
                         ),
                         child: Row(
                           children: [
-                            const Icon(Icons.cake_outlined, color: AppColors.primaryGreen, size: 22),
+                            const Icon(
+                              Icons.cake_outlined,
+                              color: AppColors.primaryGreen,
+                              size: 22,
+                            ),
                             const SizedBox(width: 12),
                             Expanded(
                               child: Text(
@@ -435,7 +490,11 @@ class _AadhaarScannerScreenState extends State<AadhaarScannerScreen>
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        const Icon(Icons.info_outline, size: 14, color: AppColors.textMuted),
+                        const Icon(
+                          Icons.info_outline,
+                          size: 14,
+                          color: AppColors.textMuted,
+                        ),
                         const SizedBox(width: 6),
                         Flexible(
                           child: Text(
@@ -451,15 +510,24 @@ class _AadhaarScannerScreenState extends State<AadhaarScannerScreen>
                     ),
                     const SizedBox(height: 16),
                     Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 14,
+                        vertical: 8,
+                      ),
                       decoration: BoxDecoration(
                         color: AppColors.surfacePaleGreen,
-                        borderRadius: BorderRadius.circular(AppDimensions.radiusSmall),
+                        borderRadius: BorderRadius.circular(
+                          AppDimensions.radiusSmall,
+                        ),
                       ),
                       child: Row(
                         mainAxisSize: MainAxisSize.min,
                         children: [
-                          const Icon(Icons.edit_outlined, size: 14, color: AppColors.primaryGreen),
+                          const Icon(
+                            Icons.edit_outlined,
+                            size: 14,
+                            color: AppColors.primaryGreen,
+                          ),
                           const SizedBox(width: 6),
                           Flexible(
                             child: Text(
@@ -513,7 +581,9 @@ class _AadhaarScannerScreenState extends State<AadhaarScannerScreen>
               decoration: BoxDecoration(
                 color: AppColors.statusWarningBg,
                 shape: BoxShape.circle,
-                border: Border.all(color: AppColors.statusWarning.withValues(alpha: 0.3)),
+                border: Border.all(
+                  color: AppColors.statusWarning.withValues(alpha: 0.3),
+                ),
               ),
               child: const Icon(
                 Icons.videocam_off_outlined,
@@ -573,7 +643,9 @@ class _AadhaarScannerScreenState extends State<AadhaarScannerScreen>
               decoration: BoxDecoration(
                 color: AppColors.statusAlertBg,
                 shape: BoxShape.circle,
-                border: Border.all(color: AppColors.statusAlert.withValues(alpha: 0.3)),
+                border: Border.all(
+                  color: AppColors.statusAlert.withValues(alpha: 0.3),
+                ),
               ),
               child: const Icon(
                 Icons.no_photography_outlined,
@@ -644,154 +716,180 @@ class _AadhaarScannerScreenState extends State<AadhaarScannerScreen>
         child: _permissionDenied
             ? _buildPermissionDeniedView()
             : _errorMessage != null
-                ? _buildCameraErrorView()
-                : !_isCameraInitialized
-                    ? const Center(
-                        child: CircularProgressIndicator(
-                          valueColor: AlwaysStoppedAnimation<Color>(AppColors.primaryGreen),
+            ? _buildCameraErrorView()
+            : !_isCameraInitialized
+            ? const Center(
+                child: CircularProgressIndicator(
+                  valueColor: AlwaysStoppedAnimation<Color>(
+                    AppColors.primaryGreen,
+                  ),
+                ),
+              )
+            : Stack(
+                fit: StackFit.expand,
+                children: [
+                  Center(child: CameraPreview(_cameraController!)),
+
+                  CustomPaint(painter: _ScannerOverlayPainter()),
+
+                  Positioned(
+                    top: 24,
+                    left: 20,
+                    right: 20,
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 16,
+                        vertical: 10,
+                      ),
+                      decoration: BoxDecoration(
+                        color: Colors.black.withValues(alpha: 0.65),
+                        borderRadius: BorderRadius.circular(
+                          AppDimensions.radiusMedium,
                         ),
-                      )
-                    : Stack(
-                        fit: StackFit.expand,
+                      ),
+                      child: Text(
+                        s.alignCard,
+                        textAlign: TextAlign.center,
+                        style: const TextStyle(
+                          color: Colors.white,
+                          fontSize: 14,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                    ),
+                  ),
+
+                  Positioned(
+                    bottom: 24,
+                    left: 20,
+                    right: 20,
+                    child: SingleChildScrollView(
+                      physics: const BouncingScrollPhysics(),
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
                         children: [
-                          Center(
-                            child: CameraPreview(_cameraController!),
-                          ),
-
-                          CustomPaint(
-                            painter: _ScannerOverlayPainter(),
-                          ),
-
-                          Positioned(
-                            top: 24,
-                            left: 20,
-                            right: 20,
-                            child: Container(
-                              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
-                              decoration: BoxDecoration(
-                                color: Colors.black.withValues(alpha: 0.65),
-                                borderRadius: BorderRadius.circular(AppDimensions.radiusMedium),
+                          Container(
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 14,
+                              vertical: 8,
+                            ),
+                            decoration: BoxDecoration(
+                              color: Colors.black.withValues(alpha: 0.6),
+                              borderRadius: BorderRadius.circular(
+                                AppDimensions.radiusSmall,
                               ),
-                              child: Text(
-                                s.alignCard,
-                                textAlign: TextAlign.center,
-                                style: const TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 14,
-                                  fontWeight: FontWeight.w600,
+                            ),
+                            child: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                const Icon(
+                                  Icons.shield_outlined,
+                                  size: 14,
+                                  color: AppColors.badgeGreenText,
+                                ),
+                                const SizedBox(width: 6),
+                                Flexible(
+                                  child: Text(
+                                    s.aadhaarProcessedSecurely,
+                                    style: const TextStyle(
+                                      color: Colors.white70,
+                                      fontSize: 11,
+                                      fontWeight: FontWeight.w500,
+                                    ),
+                                    textAlign: TextAlign.center,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                          const SizedBox(height: 16),
+
+                          if (_isProcessing)
+                            Container(
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 24,
+                                vertical: 14,
+                              ),
+                              decoration: BoxDecoration(
+                                color: Colors.black.withValues(alpha: 0.75),
+                                borderRadius: BorderRadius.circular(
+                                  AppDimensions.radiusLarge,
                                 ),
                               ),
-                            ),
-                          ),
-
-                          Positioned(
-                            bottom: 24,
-                            left: 20,
-                            right: 20,
-                            child: SingleChildScrollView(
-                              physics: const BouncingScrollPhysics(),
-                              child: Column(
+                              child: Row(
                                 mainAxisSize: MainAxisSize.min,
                                 children: [
-                                  Container(
-                                    padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
-                                    decoration: BoxDecoration(
-                                      color: Colors.black.withValues(alpha: 0.6),
-                                      borderRadius: BorderRadius.circular(AppDimensions.radiusSmall),
-                                    ),
-                                    child: Row(
-                                      mainAxisSize: MainAxisSize.min,
-                                      children: [
-                                        const Icon(Icons.shield_outlined, size: 14, color: AppColors.badgeGreenText),
-                                        const SizedBox(width: 6),
-                                        Flexible(
-                                          child: Text(
-                                            s.aadhaarProcessedSecurely,
-                                            style: const TextStyle(
-                                              color: Colors.white70,
-                                              fontSize: 11,
-                                              fontWeight: FontWeight.w500,
-                                            ),
-                                            textAlign: TextAlign.center,
-                                          ),
-                                        ),
-                                      ],
+                                  const SizedBox(
+                                    width: 20,
+                                    height: 20,
+                                    child: CircularProgressIndicator(
+                                      strokeWidth: 2.5,
+                                      valueColor: AlwaysStoppedAnimation<Color>(
+                                        Colors.white,
+                                      ),
                                     ),
                                   ),
-                                  const SizedBox(height: 16),
-
-                                  if (_isProcessing)
-                                    Container(
-                                      padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 14),
-                                      decoration: BoxDecoration(
-                                        color: Colors.black.withValues(alpha: 0.75),
-                                        borderRadius: BorderRadius.circular(AppDimensions.radiusLarge),
-                                      ),
-                                      child: Row(
-                                        mainAxisSize: MainAxisSize.min,
-                                        children: [
-                                          const SizedBox(
-                                            width: 20,
-                                            height: 20,
-                                            child: CircularProgressIndicator(
-                                              strokeWidth: 2.5,
-                                              valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
-                                            ),
-                                          ),
-                                          const SizedBox(width: 12),
-                                          Text(
-                                            s.readingAadhaar,
-                                            style: const TextStyle(
-                                              color: Colors.white,
-                                              fontSize: 14,
-                                              fontWeight: FontWeight.w600,
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    )
-                                  else
-                                    Row(
-                                      children: [
-                                        Expanded(
-                                          child: Align(
-                                            alignment: Alignment.centerLeft,
-                                            child: _buildTorchButton(_cameraController!),
-                                          ),
-                                        ),
-                                        GestureDetector(
-                                          onTap: _captureAndScan,
-                                          child: Container(
-                                            width: 72,
-                                            height: 72,
-                                            decoration: BoxDecoration(
-                                              shape: BoxShape.circle,
-                                              border: Border.all(color: Colors.white, width: 4),
-                                              color: AppColors.primaryGreen,
-                                              boxShadow: [
-                                                BoxShadow(
-                                                  color: Colors.black.withValues(alpha: 0.4),
-                                                  blurRadius: 8,
-                                                  spreadRadius: 2,
-                                                ),
-                                              ],
-                                            ),
-                                            child: const Icon(
-                                              Icons.camera_alt,
-                                              color: Colors.white,
-                                              size: 32,
-                                            ),
-                                          ),
-                                        ),
-                                        const Expanded(child: SizedBox()),
-                                      ],
+                                  const SizedBox(width: 12),
+                                  Text(
+                                    s.readingAadhaar,
+                                    style: const TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 14,
+                                      fontWeight: FontWeight.w600,
                                     ),
+                                  ),
                                 ],
                               ),
+                            )
+                          else
+                            Row(
+                              children: [
+                                Expanded(
+                                  child: Align(
+                                    alignment: Alignment.centerLeft,
+                                    child: _buildTorchButton(
+                                      _cameraController!,
+                                    ),
+                                  ),
+                                ),
+                                GestureDetector(
+                                  onTap: _captureAndScan,
+                                  child: Container(
+                                    width: 72,
+                                    height: 72,
+                                    decoration: BoxDecoration(
+                                      shape: BoxShape.circle,
+                                      border: Border.all(
+                                        color: Colors.white,
+                                        width: 4,
+                                      ),
+                                      color: AppColors.primaryGreen,
+                                      boxShadow: [
+                                        BoxShadow(
+                                          color: Colors.black.withValues(
+                                            alpha: 0.4,
+                                          ),
+                                          blurRadius: 8,
+                                          spreadRadius: 2,
+                                        ),
+                                      ],
+                                    ),
+                                    child: const Icon(
+                                      Icons.camera_alt,
+                                      color: Colors.white,
+                                      size: 32,
+                                    ),
+                                  ),
+                                ),
+                                const Expanded(child: SizedBox()),
+                              ],
                             ),
-                          ),
                         ],
                       ),
+                    ),
+                  ),
+                ],
+              ),
       ),
     );
   }
@@ -811,7 +909,10 @@ class _ScannerOverlayPainter extends CustomPainter {
       width: frameWidth,
       height: frameHeight,
     );
-    final roundedFrame = RRect.fromRectAndRadius(frameRect, const Radius.circular(16));
+    final roundedFrame = RRect.fromRectAndRadius(
+      frameRect,
+      const Radius.circular(16),
+    );
 
     final path = Path()
       ..addRect(Rect.fromLTWH(0, 0, size.width, size.height))
@@ -834,25 +935,49 @@ class _ScannerOverlayPainter extends CustomPainter {
 
     const cornerLength = 24.0;
 
-    canvas.drawLine(Offset(frameRect.left, frameRect.top + cornerLength),
-        Offset(frameRect.left, frameRect.top + 8), cornerPaint);
-    canvas.drawLine(Offset(frameRect.left + 8, frameRect.top),
-        Offset(frameRect.left + cornerLength, frameRect.top), cornerPaint);
+    canvas.drawLine(
+      Offset(frameRect.left, frameRect.top + cornerLength),
+      Offset(frameRect.left, frameRect.top + 8),
+      cornerPaint,
+    );
+    canvas.drawLine(
+      Offset(frameRect.left + 8, frameRect.top),
+      Offset(frameRect.left + cornerLength, frameRect.top),
+      cornerPaint,
+    );
 
-    canvas.drawLine(Offset(frameRect.right, frameRect.top + cornerLength),
-        Offset(frameRect.right, frameRect.top + 8), cornerPaint);
-    canvas.drawLine(Offset(frameRect.right - 8, frameRect.top),
-        Offset(frameRect.right - cornerLength, frameRect.top), cornerPaint);
+    canvas.drawLine(
+      Offset(frameRect.right, frameRect.top + cornerLength),
+      Offset(frameRect.right, frameRect.top + 8),
+      cornerPaint,
+    );
+    canvas.drawLine(
+      Offset(frameRect.right - 8, frameRect.top),
+      Offset(frameRect.right - cornerLength, frameRect.top),
+      cornerPaint,
+    );
 
-    canvas.drawLine(Offset(frameRect.left, frameRect.bottom - cornerLength),
-        Offset(frameRect.left, frameRect.bottom - 8), cornerPaint);
-    canvas.drawLine(Offset(frameRect.left + 8, frameRect.bottom),
-        Offset(frameRect.left + cornerLength, frameRect.bottom), cornerPaint);
+    canvas.drawLine(
+      Offset(frameRect.left, frameRect.bottom - cornerLength),
+      Offset(frameRect.left, frameRect.bottom - 8),
+      cornerPaint,
+    );
+    canvas.drawLine(
+      Offset(frameRect.left + 8, frameRect.bottom),
+      Offset(frameRect.left + cornerLength, frameRect.bottom),
+      cornerPaint,
+    );
 
-    canvas.drawLine(Offset(frameRect.right, frameRect.bottom - cornerLength),
-        Offset(frameRect.right, frameRect.bottom - 8), cornerPaint);
-    canvas.drawLine(Offset(frameRect.right - 8, frameRect.bottom),
-        Offset(frameRect.right - cornerLength, frameRect.bottom), cornerPaint);
+    canvas.drawLine(
+      Offset(frameRect.right, frameRect.bottom - cornerLength),
+      Offset(frameRect.right, frameRect.bottom - 8),
+      cornerPaint,
+    );
+    canvas.drawLine(
+      Offset(frameRect.right - 8, frameRect.bottom),
+      Offset(frameRect.right - cornerLength, frameRect.bottom),
+      cornerPaint,
+    );
   }
 
   @override

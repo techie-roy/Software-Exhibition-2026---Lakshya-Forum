@@ -28,8 +28,9 @@ void main() {
       final active = dataService.activeBooking;
       dataService.cancelBooking(active.id);
 
-      final updated = dataService.allBookings
-          .firstWhere((b) => b.id == active.id);
+      final updated = dataService.allBookings.firstWhere(
+        (b) => b.id == active.id,
+      );
       expect(updated.status, equals(BookingStatus.cancelled));
     });
 
@@ -47,24 +48,29 @@ void main() {
     });
 
     test('Cannot cancel a completed booking', () {
-      final completed = dataService.allBookings
-          .firstWhere((b) => b.status == BookingStatus.completed);
+      final completed = dataService.allBookings.firstWhere(
+        (b) => b.status == BookingStatus.completed,
+      );
       final cancelled = dataService.cancelBooking(completed.id);
       expect(cancelled, isNull);
     });
 
     test('Releases slot capacity so the slot becomes available again', () {
-      final slotBefore = dataService.availableSlots.firstWhere((s) =>
-          s.crop == dataService.activeBooking.crop &&
-          s.timeRange == dataService.activeBooking.timeRange);
+      final slotBefore = dataService.availableSlots.firstWhere(
+        (s) =>
+            s.crop == dataService.activeBooking.crop &&
+            s.timeRange == dataService.activeBooking.timeRange,
+      );
 
       final bookedCountBefore = slotBefore.bookedCount;
       final cancelled = dataService.cancelBooking(dataService.activeBooking.id);
       expect(cancelled, isNotNull);
 
-      final slotAfter = dataService.availableSlots.firstWhere((s) =>
-          s.crop == dataService.activeBooking.crop &&
-          s.timeRange == dataService.activeBooking.timeRange);
+      final slotAfter = dataService.availableSlots.firstWhere(
+        (s) =>
+            s.crop == dataService.activeBooking.crop &&
+            s.timeRange == dataService.activeBooking.timeRange,
+      );
 
       expect(slotAfter.bookedCount, equals(bookedCountBefore - 1));
       expect(slotAfter.status, equals(SlotStatus.available));
@@ -78,24 +84,35 @@ void main() {
       final cancelled = bookingProvider.cancelBooking(active.id);
       expect(cancelled, isNotNull);
       expect(notified, isTrue);
-      expect(bookingProvider.activeBooking.status,
-          equals(BookingStatus.cancelled));
+      expect(
+        bookingProvider.activeBooking.status,
+        equals(BookingStatus.cancelled),
+      );
     });
   });
 
   group('VoiceBookingService crop recognition', () {
     test('Recognizes English crop names case-insensitively', () {
-      expect(VoiceBookingService.recognizeCrop('I want wheat'), equals('wheat'));
-      expect(VoiceBookingService.recognizeCrop('book paddy slot'),
-          equals('paddy'));
-      expect(VoiceBookingService.recognizeCrop('mustard please'),
-          equals('mustard'));
+      expect(
+        VoiceBookingService.recognizeCrop('I want wheat'),
+        equals('wheat'),
+      );
+      expect(
+        VoiceBookingService.recognizeCrop('book paddy slot'),
+        equals('paddy'),
+      );
+      expect(
+        VoiceBookingService.recognizeCrop('mustard please'),
+        equals('mustard'),
+      );
     });
 
     test('Recognizes Hindi crop names', () {
       expect(VoiceBookingService.recognizeCrop('गेहूं'), equals('wheat'));
-      expect(VoiceBookingService.recognizeCrop('मुझे धान चाहिए'),
-          equals('paddy'));
+      expect(
+        VoiceBookingService.recognizeCrop('मुझे धान चाहिए'),
+        equals('paddy'),
+      );
       expect(VoiceBookingService.recognizeCrop('सरसों'), equals('mustard'));
       expect(VoiceBookingService.recognizeCrop('मक्का'), equals('maize'));
       expect(VoiceBookingService.recognizeCrop('गन्ना'), equals('sugarcane'));
@@ -123,8 +140,7 @@ void main() {
 
     test('Recognizes English hour words', () {
       expect(VoiceBookingService.recognizeHour('three pm'), equals(15));
-      expect(VoiceBookingService.recognizeHour('ten in morning'),
-          equals(10));
+      expect(VoiceBookingService.recognizeHour('ten in morning'), equals(10));
     });
 
     test('Recognizes Hindi hour words', () {

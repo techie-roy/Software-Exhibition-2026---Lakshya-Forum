@@ -5,7 +5,6 @@ import '../app/constants.dart';
 import '../app/localizations.dart';
 import '../app/routes.dart';
 import '../models/booking.dart';
-import '../models/farmer.dart';
 import '../models/slot.dart';
 import '../providers/auth_provider.dart';
 import '../providers/booking_provider.dart';
@@ -57,24 +56,6 @@ class _VoiceBookingScreenState extends State<VoiceBookingScreen> {
   Booking? _bookedBooking;
   MandiSlot? _bookedSlot;
   bool _exactSlotBooked = true;
-
-  static const Farmer _fallbackFarmer = Farmer(
-    id: 'FID-UP-78219',
-    name: 'Rajesh Kumar',
-    mobile: '+91 9876543210',
-    mandiId: 'MND-LKO-01',
-    mandiName: 'Lucknow Central Mandi',
-    mandiAddress: 'Transport Nagar, Lucknow, UP',
-    landSizeAcres: 6.5,
-    village: 'Malihabad',
-    district: 'Lucknow',
-    state: 'Uttar Pradesh',
-    kisanCreditCard: 'KCC-8821-4412-9901',
-    aadhaarMasked: 'XXXX-XXXX-4819',
-    bankAccountMasked: 'SBI ••••••••3912',
-    bankName: 'State Bank of India',
-    avatarInitials: 'RK',
-  );
 
   @override
   void initState() {
@@ -173,15 +154,9 @@ class _VoiceBookingScreenState extends State<VoiceBookingScreen> {
       final init = await _engine.initialize();
       if (!mounted) return;
       if (init == VoiceSpeechInitResult.unavailable) {
-        await _speakChecked(
-          S.of(context).voiceUnavailable,
-          failOnError: false,
-        );
+        await _speakChecked(S.of(context).voiceUnavailable, failOnError: false);
         if (!mounted) return;
-        _fail(
-          S.of(context).voiceUnavailable,
-          retry: _RetryAction.retryStart,
-        );
+        _fail(S.of(context).voiceUnavailable, retry: _RetryAction.retryStart);
         return;
       }
 
@@ -330,10 +305,12 @@ class _VoiceBookingScreenState extends State<VoiceBookingScreen> {
     setState(() => _isSpeaking = false);
 
     final bookingProvider = context.read<BookingProvider>();
-    final farmer = context.read<AuthProvider>().currentFarmer;
+    final farmer = context.read<AuthProvider>().displayFarmer;
 
+    // Search the full slot inventory so voice discovery is independent of any
+    // date/crop/mandi filters the user may have set on the booking screens.
     final matches = VoiceBookingService.findBestSlots(
-      slots: bookingProvider.filteredSlots,
+      slots: bookingProvider.availableSlots,
       cropId: _cropId!,
       targetHour: targetHour,
     );
@@ -367,13 +344,9 @@ class _VoiceBookingScreenState extends State<VoiceBookingScreen> {
     setState(() => _isSpeaking = false);
 
     // Create the REAL booking through the provider.
-    final resolvedFarmer = farmer ?? _fallbackFarmer;
     final Booking booking;
     try {
-      booking = bookingProvider.bookSlot(
-        slot: best.slot,
-        farmer: resolvedFarmer,
-      );
+      booking = bookingProvider.bookSlot(slot: best.slot, farmer: farmer);
     } catch (_) {
       _fail(s.voiceBookingError, retry: _RetryAction.retryBooking);
       return;
@@ -603,9 +576,10 @@ class _PulsingMicState extends State<_PulsingMic>
       vsync: this,
       duration: const Duration(milliseconds: 900),
     )..repeat(reverse: true);
-    _pulse = Tween<double>(begin: 0.92, end: 1.08).animate(
-      CurvedAnimation(parent: _controller, curve: Curves.easeInOut),
-    );
+    _pulse = Tween<double>(
+      begin: 0.92,
+      end: 1.08,
+    ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeInOut));
   }
 
   @override
@@ -633,9 +607,7 @@ class _PulsingMicState extends State<_PulsingMic>
               ),
             ),
             child: Icon(
-              widget.listening
-                  ? Icons.graphic_eq_rounded
-                  : Icons.mic_rounded,
+              widget.listening ? Icons.graphic_eq_rounded : Icons.mic_rounded,
               size: 64,
               color: AppColors.primaryGreen,
             ),
@@ -808,10 +780,7 @@ class _ProcessingPanel extends StatelessWidget {
         const SizedBox(height: 12),
         Text(
           s.checkingAvailability,
-          style: const TextStyle(
-            fontSize: 13,
-            color: AppColors.textSecondary,
-          ),
+          style: const TextStyle(fontSize: 13, color: AppColors.textSecondary),
         ),
         const Spacer(),
       ],
@@ -897,9 +866,7 @@ class _SuccessPanel extends StatelessWidget {
               padding: const EdgeInsets.all(12),
               decoration: BoxDecoration(
                 color: AppColors.statusWarningBg,
-                borderRadius: BorderRadius.circular(
-                  AppDimensions.radiusMedium,
-                ),
+                borderRadius: BorderRadius.circular(AppDimensions.radiusMedium),
                 border: Border.all(
                   color: AppColors.statusWarning.withValues(alpha: 0.4),
                 ),
@@ -939,20 +906,17 @@ class _SuccessPanel extends StatelessWidget {
                     value: s.spokenTime(requestedHour),
                   ),
                   const Divider(height: 16, color: AppColors.borderSubtle),
-                  _SuccessRow(
-                    label: s.reasonLabel,
-                    value: s.fallbackReason,
-                  ),
+                  _SuccessRow(label: s.reasonLabel, value: s.fallbackReason),
                   const Divider(height: 16, color: AppColors.borderSubtle),
                 ],
                 _SuccessRow(label: s.crop, value: cropLabel),
                 const Divider(height: 16, color: AppColors.borderSubtle),
-                _SuccessRow(
-                  label: s.bookedSlot,
-                  value: bookedSlot.timeRange,
-                ),
+                _SuccessRow(label: s.bookedSlot, value: bookedSlot.timeRange),
                 const Divider(height: 16, color: AppColors.borderSubtle),
-                _SuccessRow(label: s.date, value: AppFormatters.formatDate(bookedSlot.date)),
+                _SuccessRow(
+                  label: s.date,
+                  value: AppFormatters.formatDate(bookedSlot.date),
+                ),
                 const Divider(height: 16, color: AppColors.borderSubtle),
                 _SuccessRow(label: 'Gate', value: bookedSlot.gate),
               ],
@@ -1107,9 +1071,7 @@ class _ErrorPanel extends StatelessWidget {
           onPressed: onManual,
           icon: const Icon(Icons.touch_app_rounded),
           label: Text(s.tryManualBooking),
-          style: TextButton.styleFrom(
-            foregroundColor: AppColors.textSecondary,
-          ),
+          style: TextButton.styleFrom(foregroundColor: AppColors.textSecondary),
         ),
       ],
     );
@@ -1129,10 +1091,7 @@ class _SuccessRow extends StatelessWidget {
       children: [
         Text(
           label,
-          style: const TextStyle(
-            fontSize: 13,
-            color: AppColors.textSecondary,
-          ),
+          style: const TextStyle(fontSize: 13, color: AppColors.textSecondary),
         ),
         Expanded(
           child: Text(

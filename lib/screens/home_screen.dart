@@ -5,15 +5,16 @@ import '../app/constants.dart';
 import '../app/localizations.dart';
 import '../app/routes.dart';
 import '../models/booking.dart';
-import '../models/farmer.dart';
 import '../providers/auth_provider.dart';
 import '../providers/booking_provider.dart';
 import '../services/mock_data_service.dart';
 import '../widgets/cancel_booking_dialog.dart';
 import '../widgets/info_card.dart';
 import '../widgets/market_price_card.dart';
+import '../widgets/profile_avatar.dart';
 import '../widgets/queue_status_card.dart';
 import '../widgets/section_header.dart';
+import '../widgets/simulated_data_notice.dart';
 import '../widgets/status_badge.dart';
 import '../widgets/token_card.dart';
 import '../widgets/voice_booking_button.dart';
@@ -59,6 +60,10 @@ class HomeScreen extends StatelessWidget {
                 ],
               ),
               const SizedBox(height: 12),
+              SimulatedDataNotice(
+                title: s.simulatedDataLabel,
+                message: s.simulatedNotificationsNotice,
+              ),
               _NotificationItem(
                 title: s.queueMoving,
                 body: s.queueMovingDesc,
@@ -88,25 +93,7 @@ class HomeScreen extends StatelessWidget {
     final bookingProvider = context.watch<BookingProvider>();
     final mockService = MockDataService();
     final s = S.of(context);
-    final farmer =
-        authProvider.currentFarmer ??
-        const Farmer(
-          id: 'FID-UP-78219',
-          name: 'Rajesh Kumar',
-          mobile: '+91 9876543210',
-          mandiId: 'MND-LKO-01',
-          mandiName: 'Lucknow Central Mandi',
-          mandiAddress: 'Transport Nagar, Lucknow, UP',
-          landSizeAcres: 6.5,
-          village: 'Malihabad',
-          district: 'Lucknow',
-          state: 'Uttar Pradesh',
-          kisanCreditCard: 'KCC-8821-4412-9901',
-          aadhaarMasked: 'XXXX-XXXX-4819',
-          bankAccountMasked: 'SBI ••••••••3912',
-          bankName: 'State Bank of India',
-          avatarInitials: 'RK',
-        );
+    final farmer = authProvider.displayFarmer;
 
     final activeBooking = bookingProvider.activeBooking;
     final topPrice = mockService.marketPrices.first;
@@ -129,28 +116,14 @@ class HomeScreen extends StatelessWidget {
                   Expanded(
                     child: Row(
                       children: [
-                        Container(
-                          width: 48,
-                          height: 48,
-                          decoration: BoxDecoration(
-                            color: AppColors.surfacePaleGreen,
-                            shape: BoxShape.circle,
-                            border: Border.all(
-                              color: AppColors.primaryGreen.withValues(
-                                alpha: 0.3,
-                              ),
-                              width: 1.5,
-                            ),
-                          ),
-                          child: Center(
-                            child: Text(
-                              farmer.avatarInitials,
-                              style: const TextStyle(
-                                fontSize: 18,
-                                fontWeight: FontWeight.w800,
-                                color: AppColors.primaryGreen,
-                              ),
-                            ),
+                        ProfileAvatar(
+                          farmer: farmer,
+                          size: 48,
+                          fontSize: 18,
+                          fontWeight: FontWeight.w800,
+                          borderWidth: 1.5,
+                          borderColor: AppColors.primaryGreen.withValues(
+                            alpha: 0.3,
                           ),
                         ),
                         const SizedBox(width: 12),
@@ -562,6 +535,10 @@ class HomeScreen extends StatelessWidget {
                 },
               ),
               const SizedBox(height: 8),
+              SimulatedDataNotice(
+                title: s.simulatedDataLabel,
+                message: s.simulatedTelemetryNotice,
+              ),
               ...bookingProvider.gateStatuses.map(
                 (status) => Padding(
                   padding: const EdgeInsets.only(bottom: 10),

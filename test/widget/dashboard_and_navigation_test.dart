@@ -75,9 +75,9 @@ void main() {
     await tester.tap(find.text('Live Queue'));
     await pumpFrames(tester);
 
-    expect(find.text('Live Mandi Queue'), findsOneWidget);
+    expect(find.text('Mandi Queue (Demo)'), findsOneWidget);
     expect(find.text('Farmers Ahead'), findsOneWidget);
-    expect(find.text('LIVE'), findsOneWidget);
+    expect(find.text('DEMO'), findsOneWidget);
     expect(find.textContaining('Refreshing in'), findsOneWidget);
     expect(find.text('Gate 2'), findsWidgets);
 

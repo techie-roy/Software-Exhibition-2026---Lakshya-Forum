@@ -1,15 +1,12 @@
 import 'package:flutter/material.dart';
+
 import '../app/constants.dart';
 
 class AppLogo extends StatelessWidget {
   final double size;
   final bool showBadgeOnly;
 
-  const AppLogo({
-    super.key,
-    this.size = 64,
-    this.showBadgeOnly = false,
-  });
+  const AppLogo({super.key, this.size = 64, this.showBadgeOnly = false});
 
   @override
   Widget build(BuildContext context) {

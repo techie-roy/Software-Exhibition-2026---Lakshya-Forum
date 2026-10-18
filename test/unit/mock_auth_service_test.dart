@@ -47,7 +47,10 @@ void main() {
       expect(newFarmer.name, equals('Suresh Verma'));
       expect(authService.isMobileRegistered('9844001122'), isTrue);
 
-      final loggedIn = authService.loginWithPassword('9844001122', 'password123');
+      final loggedIn = authService.loginWithPassword(
+        '9844001122',
+        'password123',
+      );
       expect(loggedIn, isNotNull);
       expect(loggedIn!.name, equals('Suresh Verma'));
     });

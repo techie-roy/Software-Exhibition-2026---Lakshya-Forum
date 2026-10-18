@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+
 import '../app/constants.dart';
 import '../app/localizations.dart';
 import '../app/routes.dart';
 import '../models/language.dart';
+import '../providers/auth_provider.dart';
 import '../providers/language_provider.dart';
 import '../widgets/app_logo.dart';
 import '../widgets/primary_button.dart';
@@ -35,14 +37,13 @@ class _LanguageScreenState extends State<LanguageScreen> {
     return Scaffold(
       backgroundColor: AppColors.scaffoldBackground,
       appBar: widget.isSettingsMode
-          ? AppBar(
-              title: Text(s.chooseLanguage),
-              backgroundColor: Colors.white,
-            )
+          ? AppBar(title: Text(s.chooseLanguage), backgroundColor: Colors.white)
           : null,
       body: SafeArea(
         child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: AppDimensions.paddingLarge),
+          padding: const EdgeInsets.symmetric(
+            horizontal: AppDimensions.paddingLarge,
+          ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
@@ -87,7 +88,8 @@ class _LanguageScreenState extends State<LanguageScreen> {
                 child: ListView.separated(
                   physics: const BouncingScrollPhysics(),
                   itemCount: AppLanguage.supportedLanguages.length,
-                  separatorBuilder: (context, index) => const SizedBox(height: 10),
+                  separatorBuilder: (context, index) =>
+                      const SizedBox(height: 10),
                   itemBuilder: (context, index) {
                     final lang = AppLanguage.supportedLanguages[index];
                     final isSelected = lang.code == _selectedCode;
@@ -98,14 +100,25 @@ class _LanguageScreenState extends State<LanguageScreen> {
                           _selectedCode = lang.code;
                         });
                       },
-                      borderRadius: BorderRadius.circular(AppDimensions.radiusMedium),
+                      borderRadius: BorderRadius.circular(
+                        AppDimensions.radiusMedium,
+                      ),
                       child: Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 16,
+                          vertical: 14,
+                        ),
                         decoration: BoxDecoration(
-                          color: isSelected ? AppColors.surfacePaleGreen : Colors.white,
-                          borderRadius: BorderRadius.circular(AppDimensions.radiusMedium),
+                          color: isSelected
+                              ? AppColors.surfacePaleGreen
+                              : Colors.white,
+                          borderRadius: BorderRadius.circular(
+                            AppDimensions.radiusMedium,
+                          ),
                           border: Border.all(
-                            color: isSelected ? AppColors.primaryGreen : AppColors.borderSubtle,
+                            color: isSelected
+                                ? AppColors.primaryGreen
+                                : AppColors.borderSubtle,
                             width: isSelected ? 2.0 : 1.0,
                           ),
                           boxShadow: isSelected ? AppShadows.softCard : null,
@@ -116,7 +129,9 @@ class _LanguageScreenState extends State<LanguageScreen> {
                               width: 44,
                               height: 44,
                               decoration: BoxDecoration(
-                                color: isSelected ? Colors.white : AppColors.surfaceSoftMint,
+                                color: isSelected
+                                    ? Colors.white
+                                    : AppColors.surfaceSoftMint,
                                 shape: BoxShape.circle,
                               ),
                               child: Center(
@@ -125,7 +140,9 @@ class _LanguageScreenState extends State<LanguageScreen> {
                                   style: TextStyle(
                                     fontSize: 20,
                                     fontWeight: FontWeight.bold,
-                                    color: isSelected ? AppColors.primaryGreen : AppColors.textSecondary,
+                                    color: isSelected
+                                        ? AppColors.primaryGreen
+                                        : AppColors.textSecondary,
                                   ),
                                 ),
                               ),
@@ -139,8 +156,12 @@ class _LanguageScreenState extends State<LanguageScreen> {
                                     lang.nativeName,
                                     style: TextStyle(
                                       fontSize: 17,
-                                      fontWeight: isSelected ? FontWeight.w700 : FontWeight.w600,
-                                      color: isSelected ? AppColors.primaryGreen : AppColors.textPrimary,
+                                      fontWeight: isSelected
+                                          ? FontWeight.w700
+                                          : FontWeight.w600,
+                                      color: isSelected
+                                          ? AppColors.primaryGreen
+                                          : AppColors.textPrimary,
                                     ),
                                   ),
                                   Text(
@@ -158,9 +179,13 @@ class _LanguageScreenState extends State<LanguageScreen> {
                               height: 24,
                               decoration: BoxDecoration(
                                 shape: BoxShape.circle,
-                                color: isSelected ? AppColors.primaryGreen : Colors.transparent,
+                                color: isSelected
+                                    ? AppColors.primaryGreen
+                                    : Colors.transparent,
                                 border: Border.all(
-                                  color: isSelected ? AppColors.primaryGreen : AppColors.borderSubtle,
+                                  color: isSelected
+                                      ? AppColors.primaryGreen
+                                      : AppColors.borderSubtle,
                                   width: 2.0,
                                 ),
                               ),
@@ -195,7 +220,18 @@ class _LanguageScreenState extends State<LanguageScreen> {
                   if (widget.isSettingsMode) {
                     Navigator.pop(context);
                   } else {
-                    Navigator.pushReplacementNamed(context, AppRoutes.login);
+                    // First-launch gate: resume an existing session straight
+                    // into the app; otherwise continue to login. The session
+                    // restore may still be in flight on cold start.
+                    final authProvider = context.read<AuthProvider>();
+                    await authProvider.ready;
+                    if (!context.mounted) return;
+                    Navigator.pushReplacementNamed(
+                      context,
+                      authProvider.isLoggedIn
+                          ? AppRoutes.main
+                          : AppRoutes.login,
+                    );
                   }
                 },
               ),

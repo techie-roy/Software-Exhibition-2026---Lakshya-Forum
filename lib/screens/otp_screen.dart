@@ -1,6 +1,8 @@
 import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+
 import '../app/constants.dart';
 import '../app/localizations.dart';
 import '../app/routes.dart';
@@ -9,6 +11,7 @@ import '../providers/auth_provider.dart';
 import '../utils/formatters.dart';
 import '../utils/validators.dart';
 import '../widgets/app_logo.dart';
+import '../widgets/demo_mode_banner.dart';
 import '../widgets/primary_button.dart';
 import '../widgets/secondary_button.dart';
 
@@ -27,8 +30,10 @@ class OtpScreen extends StatefulWidget {
 }
 
 class _OtpScreenState extends State<OtpScreen> {
-  final List<TextEditingController> _digitControllers =
-      List.generate(6, (_) => TextEditingController());
+  final List<TextEditingController> _digitControllers = List.generate(
+    6,
+    (_) => TextEditingController(),
+  );
   final List<FocusNode> _focusNodes = List.generate(6, (_) => FocusNode());
 
   bool _isRegistered = false;
@@ -48,18 +53,48 @@ class _OtpScreenState extends State<OtpScreen> {
     _isRegistered = authProvider.isMobileRegistered(widget.mobileNumber);
 
     if (_isRegistrationFlow) {
+      // The register screen already awaited the real OTP send (or the demo
+      // no-op) before navigating here; the Resend button covers retries.
       _startResendTimer();
     } else if (_isRegistered) {
       _startResendTimer();
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        const mockCode = '123456';
-        for (int i = 0; i < 6; i++) {
-          _digitControllers[i].text = mockCode[i];
-        }
-      });
+      if (authProvider.isPhoneAuthAvailable) {
+        // Real Firebase Phone Auth: request the SMS as soon as the login
+        // OTP screen opens (same entry points as before: auth/register
+        // "Continue with OTP").
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          _sendOtp();
+        });
+      } else {
+        // Disclosed demo path: prefill the well-known demo code so manual
+        // typing isn't needed when no SMS exists.
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          const mockCode = '123456';
+          for (int i = 0; i < 6; i++) {
+            _digitControllers[i].text = mockCode[i];
+          }
+        });
+      }
     } else {
       _startRedirectCountdown();
     }
+  }
+
+  Future<void> _sendOtp() async {
+    final authProvider = context.read<AuthProvider>();
+    final ok = await authProvider.sendOtp(
+      widget.mobileNumber,
+      forRegistration: _isRegistrationFlow,
+    );
+    if (!mounted || ok) return;
+    final s = S.of(context);
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(authProvider.errorMessage ?? s.otpSendFailed),
+        backgroundColor: AppColors.statusAlert,
+        behavior: SnackBarBehavior.floating,
+      ),
+    );
   }
 
   void _startRedirectCountdown() {
@@ -131,7 +166,11 @@ class _OtpScreenState extends State<OtpScreen> {
     final authProvider = context.read<AuthProvider>();
 
     if (_isRegistrationFlow) {
-      final otpValid = await authProvider.verifyRegistrationOtp(widget.mobileNumber, otp);
+      final otpValid = await authProvider.confirmOtp(
+        widget.mobileNumber,
+        otp,
+        forRegistration: true,
+      );
       if (!mounted) return;
 
       if (!otpValid) {
@@ -180,7 +219,11 @@ class _OtpScreenState extends State<OtpScreen> {
         );
       }
     } else {
-      final success = await authProvider.verifyOtpAndLogin(widget.mobileNumber, otp);
+      final success = await authProvider.confirmOtp(
+        widget.mobileNumber,
+        otp,
+        forRegistration: false,
+      );
 
       if (!mounted) return;
 
@@ -271,11 +314,17 @@ class _OtpScreenState extends State<OtpScreen> {
                   fillColor: Colors.white,
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(10),
-                    borderSide: const BorderSide(color: AppColors.borderSubtle, width: 1.5),
+                    borderSide: const BorderSide(
+                      color: AppColors.borderSubtle,
+                      width: 1.5,
+                    ),
                   ),
                   focusedBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(10),
-                    borderSide: const BorderSide(color: AppColors.primaryGreen, width: 2),
+                    borderSide: const BorderSide(
+                      color: AppColors.primaryGreen,
+                      width: 2,
+                    ),
                   ),
                 ),
                 onChanged: (value) {
@@ -295,9 +344,7 @@ class _OtpScreenState extends State<OtpScreen> {
               ? TextButton(
                   onPressed: () {
                     _startResendTimer();
-                    if (_isRegistrationFlow) {
-                      authProvider.sendRegistrationOtp(widget.mobileNumber);
-                    }
+                    _sendOtp();
                   },
                   child: Text(
                     s.resendOtp,
@@ -351,7 +398,10 @@ class _OtpScreenState extends State<OtpScreen> {
             decoration: BoxDecoration(
               color: AppColors.statusWarningBg,
               shape: BoxShape.circle,
-              border: Border.all(color: AppColors.statusWarning.withValues(alpha: 0.3), width: 2),
+              border: Border.all(
+                color: AppColors.statusWarning.withValues(alpha: 0.3),
+                width: 2,
+              ),
             ),
             child: const Center(
               child: Icon(
@@ -401,7 +451,9 @@ class _OtpScreenState extends State<OtpScreen> {
                     height: 20,
                     child: CircularProgressIndicator(
                       strokeWidth: 2.5,
-                      valueColor: AlwaysStoppedAnimation<Color>(AppColors.primaryGreen),
+                      valueColor: AlwaysStoppedAnimation<Color>(
+                        AppColors.primaryGreen,
+                      ),
                     ),
                   ),
                   const SizedBox(width: 12),
@@ -449,6 +501,7 @@ class _OtpScreenState extends State<OtpScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final authProvider = context.watch<AuthProvider>();
     return Scaffold(
       backgroundColor: AppColors.scaffoldBackground,
       appBar: AppBar(
@@ -465,10 +518,25 @@ class _OtpScreenState extends State<OtpScreen> {
       body: SafeArea(
         child: SingleChildScrollView(
           physics: const BouncingScrollPhysics(),
-          padding: const EdgeInsets.symmetric(horizontal: AppDimensions.paddingLarge, vertical: 12),
-          child: _isRegistrationFlow
-              ? _buildOtpInput()
-              : (_isRegistered ? _buildOtpInput() : _buildUnregisteredView()),
+          padding: const EdgeInsets.symmetric(
+            horizontal: AppDimensions.paddingLarge,
+            vertical: 12,
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              // Always label the auth path, in every build mode: simulated
+              // demo copy vs. real-Firebase-OTP copy.
+              DemoModeBanner(
+                realOtpVerification: authProvider.isPhoneAuthAvailable,
+              ),
+              _isRegistrationFlow
+                  ? _buildOtpInput()
+                  : (_isRegistered
+                        ? _buildOtpInput()
+                        : _buildUnregisteredView()),
+            ],
+          ),
         ),
       ),
     );

@@ -1,11 +1,13 @@
 import 'dart:io';
+
 import 'package:flutter_test/flutter_test.dart';
 import 'package:agri_queue/services/aadhaar_ocr_service.dart';
 
 void main() {
   group('AadhaarOcrService Extraction Tests', () {
     test('Extracts candidate from spaced 4-4-4 format', () {
-      const text = 'Unique Identification Authority of India\n5432 1098 7654\nGovernment of India';
+      const text =
+          'Unique Identification Authority of India\n5432 1098 7654\nGovernment of India';
       final candidates = AadhaarOcrService.extractCandidates(text);
 
       expect(candidates, contains('543210987654'));
@@ -73,11 +75,16 @@ void main() {
 
     test('Returns empty list for empty or non-numeric text', () {
       expect(AadhaarOcrService.extractCandidates(''), isEmpty);
-      expect(AadhaarOcrService.extractCandidates('Just random text without numbers'), isEmpty);
+      expect(
+        AadhaarOcrService.extractCandidates('Just random text without numbers'),
+        isEmpty,
+      );
     });
 
     test('processImageFile handles non-existent file gracefully', () async {
-      final result = await AadhaarOcrService.processImageFile('non_existent_file.jpg');
+      final result = await AadhaarOcrService.processImageFile(
+        'non_existent_file.jpg',
+      );
       expect(result.isSuccess, isFalse);
       expect(result.errorMessage, contains("Couldn't read"));
     });
@@ -85,7 +92,9 @@ void main() {
     test('Privacy: deletes temporary image file after processing attempt', () async {
       // Create a temporary mock image file
       final tempDir = Directory.systemTemp;
-      final tempFile = File('${tempDir.path}/test_aadhaar_ocr_cleanup_${DateTime.now().millisecondsSinceEpoch}.tmp');
+      final tempFile = File(
+        '${tempDir.path}/test_aadhaar_ocr_cleanup_${DateTime.now().millisecondsSinceEpoch}.tmp',
+      );
       await tempFile.writeAsString('dummy file content for privacy testing');
 
       expect(await tempFile.exists(), isTrue);

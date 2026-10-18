@@ -5,7 +5,9 @@ class Validators {
     }
     // Strip spaces, dashes, +91 prefix
     final clean = value.replaceAll(RegExp(r'[\s\-\+\(\)]'), '');
-    final tenDigit = clean.length > 10 ? clean.substring(clean.length - 10) : clean;
+    final tenDigit = clean.length > 10
+        ? clean.substring(clean.length - 10)
+        : clean;
     if (tenDigit.length != 10 || !RegExp(r'^[6-9]\d{9}$').hasMatch(tenDigit)) {
       return 'Please enter a valid 10-digit mobile number';
     }
@@ -46,6 +48,28 @@ class Validators {
     return null;
   }
 
+  /// Required-email variant used by Firebase email/password flows.
+  /// Kept separate so the existing optional-email behaviour is untouched.
+  static String? validateEmailRequired(String? value) {
+    if (value == null || value.trim().isEmpty) {
+      return 'Please enter your email address';
+    }
+    return validateEmail(value);
+  }
+
+  /// Firebase requires passwords of at least 6 characters.
+  /// The legacy mock flow allows 4; this stricter check is only used
+  /// for Firebase email/password registration and sign-in.
+  static String? validateFirebasePassword(String? value) {
+    if (value == null || value.isEmpty) {
+      return 'Please enter your password';
+    }
+    if (value.length < 6) {
+      return 'Password must be at least 6 characters';
+    }
+    return null;
+  }
+
   static String? validateDob(String? value) {
     if (value == null || value.trim().isEmpty) {
       return 'Please enter your date of birth';
@@ -58,7 +82,12 @@ class Validators {
     final day = int.tryParse(match.group(1)!) ?? 0;
     final month = int.tryParse(match.group(2)!) ?? 0;
     final year = int.tryParse(match.group(3)!) ?? 0;
-    if (month < 1 || month > 12 || day < 1 || day > 31 || year < 1900 || year > DateTime.now().year) {
+    if (month < 1 ||
+        month > 12 ||
+        day < 1 ||
+        day > 31 ||
+        year < 1900 ||
+        year > DateTime.now().year) {
       return 'Please enter a valid date of birth';
     }
     return null;

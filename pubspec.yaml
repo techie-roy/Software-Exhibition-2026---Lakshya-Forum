@@ -1,5 +1,5 @@
 name: agri_queue
-description: "A new Flutter project."
+description: "A multilingual Flutter app for farmers to book mandi arrival slots, track live queue position, and view market prices and procurement info."
 # The following line prevents the package from being accidentally published to
 # pub.dev using `flutter pub publish`. This is preferred for private packages.
 publish_to: 'none' # Remove this line if you wish to publish to pub.dev
@@ -43,6 +43,10 @@ dependencies:
   permission_handler: ^13.0.2
   speech_to_text: ^7.4.0
   flutter_tts: ^4.2.5
+  firebase_core: ^4.15.0
+  firebase_auth: ^6.7.0
+  google_sign_in: ^7.2.0
+  http: ^1.6.0
 
 dev_dependencies:
   flutter_test:
